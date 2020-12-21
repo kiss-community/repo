@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+patch -p1 < query-tool.patch
+
 make PREFIX=/usr
 make PREFIX=/usr DESTDIR="$1" install
 
