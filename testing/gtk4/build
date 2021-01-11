@@ -2,6 +2,13 @@
 
 export DESTDIR="$1"
 
+# Create gtk-doc subproject directory so that meson doesn't try to clone it
+# even when we disable it. We also don't really need sass, but there is no
+# option to disable it.
+mkdir -p subprojects/gtk-doc \
+         subprojects/libsass \
+         subprojects/sassc
+
 meson \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -21,7 +28,7 @@ meson \
     -Dsysprof=disabled \
     -Dtracker=disabled \
     -Dcolord=disabled \
-    -Dsassc=auto \
+    -Dsassc=disabled \
     -Dgtk_doc=false \
     -Dman-pages=false \
     -Dintrospection=disabled \
@@ -41,5 +48,5 @@ ninja -C output install
 rm -f "$1/usr/bin/gtk4-encode-symbolic-svg"
 
 # We don't offer support for internationalization
-# so gettext related files can be removed
+# so gettext related files can be removed.
 rm -rf "$1/usr/share/gettext"
