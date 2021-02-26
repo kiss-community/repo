@@ -1191,7 +1191,7 @@ index 8f97256..a371581 100644
  #endif
  
 diff --git a/gfx/gl/GLContextProviderWayland.cpp b/gfx/gl/GLContextProviderWayland.cpp
-index 4f7c153..f1b024d 100644
+index 4f7c153..25ee2d4 100644
 --- a/gfx/gl/GLContextProviderWayland.cpp
 +++ b/gfx/gl/GLContextProviderWayland.cpp
 @@ -3,7 +3,7 @@
@@ -1203,7 +1203,7 @@ index 4f7c153..f1b024d 100644
  #  include <gdk/gdk.h>
  #  include <gdk/gdkx.h>
  #endif
-@@ -21,41 +21,26 @@ static class GLContextProviderEGL sGLContextProviderEGL;
+@@ -21,41 +21,24 @@ static class GLContextProviderEGL sGLContextProviderEGL;
  already_AddRefed<GLContext> GLContextProviderWayland::CreateForCompositorWidget(
      CompositorWidget* aCompositorWidget, bool aWebRender,
      bool aForceAccelerated) {
@@ -1228,7 +1228,7 @@ index 4f7c153..f1b024d 100644
  
  /*static*/
  GLContext* GLContextProviderWayland::GetGlobalContext() {
-   if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
+-  if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 -    return sGLContextProviderX11.GetGlobalContext();
 -  } else {
      return sGLContextProviderEGL.GetGlobalContext();
@@ -1237,7 +1237,7 @@ index 4f7c153..f1b024d 100644
  
  /*static*/
  void GLContextProviderWayland::Shutdown() {
-   if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
+-  if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
 -    sGLContextProviderX11.Shutdown();
 -  } else {
      sGLContextProviderEGL.Shutdown();
