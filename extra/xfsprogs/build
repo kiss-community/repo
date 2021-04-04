@@ -26,6 +26,9 @@ export LDFLAGS="$LDFLAGS -L$PWD/libinih/lib"
 # Remove incorrect bash dependency.
 sed -i 's/bash/sh/' install-sh
 
+# Explicitly include <signal.h> instead of implicit inclusion.
+sed -i '1i#include <signal.h>' include/linux.h
+
 ./configure \
     --prefix=/usr \
     --sbindir=/usr/bin \
