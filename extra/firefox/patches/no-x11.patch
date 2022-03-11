@@ -1,18 +1,3 @@
-diff --git a/dom/media/systemservices/video_engine/desktop_device_info_x11.cc b/dom/media/systemservices/video_engine/desktop_device_info_x11.cc
-index a9f88f0f90..7cfe45533c 100644
---- a/dom/media/systemservices/video_engine/desktop_device_info_x11.cc
-+++ b/dom/media/systemservices/video_engine/desktop_device_info_x11.cc
-@@ -7,10 +7,6 @@
- 
- #include <inttypes.h>
- 
--#if !defined(WEBRTC_USE_X11) || !defined(MOZ_X11)
--#  error Bad build setup, some X11 defines are missing
--#endif
--
- namespace webrtc {
- 
- DesktopDeviceInfo* DesktopDeviceInfoImpl::Create() {
 diff --git a/gfx/angle/moz.build.common b/gfx/angle/moz.build.common
 index 8769a2fe96..6976853b35 100644
 --- a/gfx/angle/moz.build.common
@@ -440,10 +425,10 @@ index b1e2b58621..576ec91669 100644
  
  for var in (
 diff --git a/toolkit/xre/nsAppRunner.cpp b/toolkit/xre/nsAppRunner.cpp
-index ce001e9382..80d1694a11 100644
+index d997493..a6cef19 100644
 --- a/toolkit/xre/nsAppRunner.cpp
 +++ b/toolkit/xre/nsAppRunner.cpp
-@@ -4116,6 +4116,7 @@ static void PR_CALLBACK ReadAheadDlls_ThreadStart(void* arg) {
+@@ -4493,6 +4493,7 @@ static void PR_CALLBACK ReadAheadDlls_ThreadStart(void* arg) {
  
  #if defined(MOZ_WAYLAND)
  bool IsWaylandEnabled() {
@@ -451,16 +436,16 @@ index ce001e9382..80d1694a11 100644
    const char* waylandDisplay = PR_GetEnv("WAYLAND_DISPLAY");
    if (!waylandDisplay) {
      return false;
-@@ -4145,6 +4146,9 @@ bool IsWaylandEnabled() {
-         "Running Wayland backend on Gtk3 < 3.22. Expect issues/glitches");
+@@ -4513,6 +4514,9 @@ bool IsWaylandEnabled() {
+       return true;
+     }
    }
-   return enabled;
 +#  else
 +  return true;
 +#  endif
- }
- #endif
- 
+ #  ifdef EARLY_BETA_OR_EARLIER
+   // Enable by default when we're running on a recent enough GTK version. We'd
+   // like to check further details like compositor version and so on ideally
 diff --git a/toolkit/xre/nsGDKErrorHandler.cpp b/toolkit/xre/nsGDKErrorHandler.cpp
 index 421abdf12f..c7803cf973 100644
 --- a/toolkit/xre/nsGDKErrorHandler.cpp
@@ -687,19 +672,11 @@ index 38c07bd812..8f2c10894a 100644
  if defined('NS_PRINTING'):
      Classes += [
          {
-diff --git a/widget/x11/keysym2ucs.c b/widget/gtk/keysym2ucs.c
-similarity index 100%
-rename from widget/x11/keysym2ucs.c
-rename to widget/gtk/keysym2ucs.c
-diff --git a/widget/x11/keysym2ucs.h b/widget/gtk/keysym2ucs.h
-similarity index 100%
-rename from widget/x11/keysym2ucs.h
-rename to widget/gtk/keysym2ucs.h
 diff --git a/widget/gtk/moz.build b/widget/gtk/moz.build
-index 1d82fc36c2..98af9fca3d 100644
+index 320318b..d83a256 100644
 --- a/widget/gtk/moz.build
 +++ b/widget/gtk/moz.build
-@@ -34,15 +34,23 @@ EXPORTS += [
+@@ -34,16 +34,24 @@ EXPORTS += [
  EXPORTS.mozilla += ["WidgetUtilsGtk.h"]
  
  EXPORTS.mozilla.widget += [
@@ -712,6 +689,7 @@ index 1d82fc36c2..98af9fca3d 100644
  ]
  
  UNIFIED_SOURCES += [
+     "AsyncGtkClipboardRequest.cpp",
 +    "CompositorWidgetChild.cpp",
 +    "CompositorWidgetParent.cpp",
      "GfxInfo.cpp",
@@ -723,7 +701,7 @@ index 1d82fc36c2..98af9fca3d 100644
      "MozContainer.cpp",
      "MPRISServiceHandler.cpp",
      "NativeKeyBindings.cpp",
-@@ -58,6 +66,7 @@ UNIFIED_SOURCES += [
+@@ -59,6 +67,7 @@ UNIFIED_SOURCES += [
      "nsLookAndFeel.cpp",
      "nsSound.cpp",
      "nsToolkit.cpp",
@@ -789,7 +767,7 @@ index 1a86468b4f..eee67ed3a9 100644
  
  union wl_argument;
 diff --git a/widget/gtk/nsClipboard.cpp b/widget/gtk/nsClipboard.cpp
-index 8fdd8e38dc..ea0eaae2de 100644
+index 800fde7..f5e9ef7 100644
 --- a/widget/gtk/nsClipboard.cpp
 +++ b/widget/gtk/nsClipboard.cpp
 @@ -9,7 +9,9 @@
@@ -802,8 +780,8 @@ index 8fdd8e38dc..ea0eaae2de 100644
 +#endif
  #if defined(MOZ_WAYLAND)
  #  include "nsClipboardWayland.h"
- #  include "nsClipboardWaylandAsync.h"
-@@ -37,7 +39,6 @@
+ #endif
+@@ -36,7 +38,6 @@
  #include "imgIContainer.h"
  
  #include <gtk/gtk.h>
@@ -811,7 +789,7 @@ index 8fdd8e38dc..ea0eaae2de 100644
  
  #include "mozilla/Encoding.h"
  
-@@ -106,17 +107,21 @@ nsClipboard::~nsClipboard() {
+@@ -134,13 +135,17 @@ nsClipboard::~nsClipboard() {
  NS_IMPL_ISUPPORTS(nsClipboard, nsIClipboard, nsIObserver)
  
  nsresult nsClipboard::Init(void) {
@@ -823,11 +801,7 @@ index 8fdd8e38dc..ea0eaae2de 100644
  #if defined(MOZ_WAYLAND)
 -  } else if (widget::GdkIsWaylandDisplay()) {
 +  if (widget::GdkIsWaylandDisplay()) {
-     if (StaticPrefs::widget_wayland_async_clipboard_enabled_AtStartup()) {
-       mContext = new nsRetrievalContextWaylandAsync();
-     } else {
-       mContext = new nsRetrievalContextWayland();
-     }
+     mContext = new nsRetrievalContextWayland();
 +  }
  #endif
 -  } else {
