@@ -3,6 +3,7 @@
 for p in *.patch; do
     patch -p1 < "$p"
 done
+
 mv widget/x11/keysym2ucs.c widget/gtk/keysym2ucs.c
 mv widget/x11/keysym2ucs.h widget/gtk/keysym2ucs.h
 
