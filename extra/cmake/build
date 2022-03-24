@@ -24,7 +24,7 @@ else
         --system-bzip2
 
     make
-    make install
+    make DESTDIR="$1" install
 fi
 
 rm -rf \

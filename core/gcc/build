@@ -55,7 +55,7 @@ esac
     "${bootstrap:---enable-bootstrap}"
 
 make
-make install
+make DESTDIR="$1" install
 
 # Save 35MB.
 find "$1" -name libgtkpeer.a  -exec rm -f {} +

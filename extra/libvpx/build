@@ -25,7 +25,7 @@ sh ./configure \
     --as=nasm
 
 make
-make install
+make DESTDIR="$1" install
 
 # ABI was bumped for command-line options. This symbolic link removes the need
 # for users to rebuild Firefox, etc. Will be removed as of next Firefox release.

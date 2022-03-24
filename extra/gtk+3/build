@@ -63,7 +63,7 @@ sh ./configure \
     --enable-gtk-doc-html=no
 
 make
-make install
+make DESTDIR="$1" install
 
 # GTK+3 on Wayland requires gsettings-desktop-schemas for gsettings to work
 # correctly. Under X11 it made use of xsettings but this is no longer the case.

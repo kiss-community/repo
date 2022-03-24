@@ -17,7 +17,7 @@ mv widget/x11/keysym2ucs.h widget/gtk/keysym2ucs.h
         --program-suffix=-2.13
 
     make
-    make install
+    make DESTDIR="$1" install
 )
 
 # Build yasm for Firefox's sole use. Firefox is the only package which needs it

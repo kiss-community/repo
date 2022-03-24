@@ -27,5 +27,5 @@ cp -f update-certdata.sh "$1/etc/ssl"
         --with-openssl="$1/usr"
 
     make
-    make install
+    make DESTDIR="$1" install
 )

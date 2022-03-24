@@ -47,7 +47,7 @@ build_grub() (
         "$@"
 
     make
-    make install
+    make DESTDIR="$1" install
 )
 
 build_grub --with-platform=pc
