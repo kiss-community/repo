@@ -1,9 +1,9 @@
 #!/bin/sh -e
 
-meson \
-    --prefix=/usr \
+muon setup \
+    -Dprefix=/usr \
     -Djpeg=disabled \
-    . build
+    build
 
 ninja -C build
-ninja -C build install
+muon  -C build install
