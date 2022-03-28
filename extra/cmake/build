@@ -2,7 +2,7 @@
 
 patch -p1 < cmake-no-execinfo.patch
 
-if kiss l cmake; then
+if command -v cmake >/dev/null; then
     cmake -B build \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=Release \
