@@ -34,7 +34,7 @@ mv -f _ meson.build
 # To prevent the need for users to fork the mesa package to add
 # libglvnd support, the below code checks for its availability
 # and enables it if present. ie: install glvnd, rebuild mesa.
-! kiss l libglvnd >/dev/null 2>&1 || glvnd_enabled=true
+pkg-config --exists libglvnd || glvnd_enabled=false
 
 meson \
     --prefix=/usr \
@@ -48,7 +48,7 @@ meson \
     -Degl=enabled \
     -Dvalgrind=false \
     -Dzstd=false \
-    -Dglvnd="${glvnd_enabled:-false}" \
+    -Dglvnd="${glvnd_enabled:-true}" \
     . output
 
 ninja -C output
