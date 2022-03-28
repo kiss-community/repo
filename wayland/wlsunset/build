@@ -1,9 +1,9 @@
 #!/bin/sh -e
 
-meson \
-    --prefix=/usr \
-    --buildtype=release \
-    . output
+muon setup \
+    -Dprefix=/usr \
+    -Dbuildtype=release \
+    output
 
 ninja -C output
-ninja -C output install
+muon  -C output install
