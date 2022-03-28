@@ -1,7 +1,6 @@
 cairo
 libxkbcommon
 linux-headers make
-meson make
-pkgconf make
+muon make
 wayland
 wayland-protocols make
