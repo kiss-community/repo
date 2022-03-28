@@ -85,7 +85,8 @@ EOF
 # Workaround to get Rust to build in llvm-only environments.
 # libgcc_s.so is needed for Rust's bootstrap binaries, on llvm-only systems
 # this library does not exist. This hack creates it as alias to libunwind.
-case $("$CC" -print-file-name=libunwind.so) in */*)
+libunwind_path=$("$CC" -print-file-name=libunwind.so)
+case $libunwind_path in */*)
     printf 'llvm-libunwind = "system"\n' >> config.toml
 
     mkdir -p libgcc
@@ -93,7 +94,7 @@ case $("$CC" -print-file-name=libunwind.so) in */*)
     printf 'INPUT(-lunwind)\n' > \
         libgcc/libgcc_s.so
 
-    ln -sf "$KISS_ROOT/usr/lib/libunwind.so.1" \
+    ln -sf "$libunwind_path" \
         libgcc/libgcc_s.so.1
 
     export \
