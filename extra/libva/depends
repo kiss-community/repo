@@ -1,5 +1,4 @@
 libdrm
 linux-headers make
-meson         make
-pkgconf       make
+muon          make
 wayland
