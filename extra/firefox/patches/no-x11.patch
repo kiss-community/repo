@@ -63,7 +63,7 @@ index 03434957cc..c4727d79a1 100644
  UNIFIED_SOURCES += [
      "AndroidSurfaceTexture.cpp",
 diff --git a/gfx/layers/client/TextureClient.cpp b/gfx/layers/client/TextureClient.cpp
-index aaec3c3510..65bee9f869 100644
+index 3861d3a..8dcad53 100644
 --- a/gfx/layers/client/TextureClient.cpp
 +++ b/gfx/layers/client/TextureClient.cpp
 @@ -48,8 +48,6 @@
@@ -79,7 +79,7 @@ diff --git a/gfx/thebes/gfxPlatformGtk.cpp b/gfx/thebes/gfxPlatformGtk.cpp
 index 1b46a2aab8..4a487e0b78 100644
 --- a/gfx/thebes/gfxPlatformGtk.cpp
 +++ b/gfx/thebes/gfxPlatformGtk.cpp
-@@ -31,11 +31,11 @@
+@@ -31,12 +31,12 @@
  #include "mozilla/FontPropertyTypes.h"
  #include "mozilla/gfx/2D.h"
  #include "mozilla/gfx/Logging.h"
@@ -88,11 +88,12 @@ index 1b46a2aab8..4a487e0b78 100644
  #include "mozilla/Preferences.h"
  #include "mozilla/StaticPrefs_gfx.h"
  #include "mozilla/StaticPrefs_layers.h"
+ #include "mozilla/StaticPrefs_media.h"
 +#include "mozilla/WidgetUtilsGtk.h"
  #include "nsAppRunner.h"
  #include "nsIGfxInfo.h"
  #include "nsMathUtils.h"
-@@ -52,6 +52,7 @@
+@@ -53,6 +53,7 @@
  #  include "GLXLibrary.h"
  #  include "mozilla/X11Util.h"
  #  include "SoftwareVsyncSource.h"
@@ -175,7 +176,7 @@ index a5cf9234d1..ddce223c19 100644
          "/third_party/libwebrtc/modules/desktop_capture/screen_capturer_linux.cc",
          "/third_party/libwebrtc/modules/desktop_capture/window_capturer_linux.cc"
      ]
-+    
++
 +    if CONFIG["MOZ_X11"]:
 +        UNIFIED_SOURCES += [
 +            "/third_party/libwebrtc/modules/desktop_capture/linux/mouse_cursor_monitor_x11.cc",
@@ -673,11 +674,11 @@ index 38c07bd812..8f2c10894a 100644
      Classes += [
          {
 diff --git a/widget/gtk/moz.build b/widget/gtk/moz.build
-index 320318b..d83a256 100644
+index 4832cac..dfe7adb 100644
 --- a/widget/gtk/moz.build
 +++ b/widget/gtk/moz.build
-@@ -34,16 +34,24 @@ EXPORTS += [
- EXPORTS.mozilla += ["WidgetUtilsGtk.h"]
+@@ -38,16 +38,24 @@ EXPORTS.mozilla += [
+ ]
  
  EXPORTS.mozilla.widget += [
 +    "CompositorWidgetChild.h",
@@ -701,7 +702,7 @@ index 320318b..d83a256 100644
      "MozContainer.cpp",
      "MPRISServiceHandler.cpp",
      "NativeKeyBindings.cpp",
-@@ -59,6 +67,7 @@ UNIFIED_SOURCES += [
+@@ -65,6 +73,7 @@ UNIFIED_SOURCES += [
      "nsLookAndFeel.cpp",
      "nsSound.cpp",
      "nsToolkit.cpp",
@@ -709,7 +710,7 @@ index 320318b..d83a256 100644
      "nsWidgetFactory.cpp",
      "ScreenHelperGTK.cpp",
      "TaskbarProgress.cpp",
-@@ -101,22 +110,12 @@ if CONFIG["MOZ_WAYLAND"]:
+@@ -115,22 +124,12 @@ if CONFIG["MOZ_WAYLAND"]:
  
  if CONFIG["MOZ_X11"]:
      UNIFIED_SOURCES += [
@@ -1067,25 +1068,6 @@ index 8fb56543b7..9a562eb124 100644
  #include <sys/types.h>
  #include <sys/stat.h>
  #include <fcntl.h>
-@@ -527,6 +528,7 @@ static void wayland_window_handle_exported(GdkWindow* window,
- static gboolean window_export_handle(GtkWindow* window,
-                                      GtkWindowHandleExported callback,
-                                      gpointer user_data) {
-+#ifdef MOZ_X11
-   if (GdkIsX11Display()) {
-     GdkWindow* gdk_window = gtk_widget_get_window(GTK_WIDGET(window));
-     char* handle_str;
-@@ -537,8 +539,9 @@ static gboolean window_export_handle(GtkWindow* window,
-     g_free(handle_str);
-     return true;
-   }
-+#endif
- #ifdef MOZ_WAYLAND
--  else if (GdkIsWaylandDisplay()) {
-+  if (GdkIsWaylandDisplay()) {
-     GdkWindow* gdk_window = gtk_widget_get_window(GTK_WIDGET(window));
-     WaylandWindowHandleExportedData* data;
- 
 diff --git a/widget/gtk/nsUserIdleServiceGTK.cpp b/widget/gtk/nsUserIdleServiceGTK.cpp
 index 884d52a6ca..4b2b04f09a 100644
 --- a/widget/gtk/nsUserIdleServiceGTK.cpp
@@ -1599,20 +1581,20 @@ index 59e01f0fea..12bdda1cd4 100644
    // FIXME: It would be nice to have the widget position at the time
    // of the event, but it's relatively unlikely that the widget has
 diff --git a/widget/gtk/nsWindow.h b/widget/gtk/nsWindow.h
-index 9baa034477..cfd4a6c178 100644
+index 48cfd89..669060f 100644
 --- a/widget/gtk/nsWindow.h
 +++ b/widget/gtk/nsWindow.h
-@@ -98,7 +98,9 @@ typedef struct _GdkEventTouchpadPinch GdkEventTouchpadPinch;
+@@ -89,7 +89,9 @@ namespace mozilla {
+ enum class NativeKeyBindingsType : uint8_t;
  
- namespace mozilla {
  class TimeStamp;
 +#ifdef MOZ_X11
  class CurrentX11TimeGetter;
 +#endif
- 
  }  // namespace mozilla
  
-@@ -278,7 +280,9 @@ class nsWindow final : public nsBaseWidget {
+ class nsWindow final : public nsBaseWidget {
+@@ -267,7 +269,9 @@ class nsWindow final : public nsBaseWidget {
  
    WidgetEventTime GetWidgetEventTime(guint32 aEventTime);
    mozilla::TimeStamp GetEventTimeStamp(guint32 aEventTime);
@@ -1622,7 +1604,7 @@ index 9baa034477..cfd4a6c178 100644
  
    void SetInputContext(const InputContext& aContext,
                         const InputContextAction& aAction) override;
-@@ -473,7 +477,7 @@ class nsWindow final : public nsBaseWidget {
+@@ -465,7 +469,7 @@ class nsWindow final : public nsBaseWidget {
    void DestroyChildWindows();
    GtkWidget* GetToplevelWidget();
    nsWindow* GetContainerWindow();
@@ -1631,7 +1613,7 @@ index 9baa034477..cfd4a6c178 100644
    bool GetShapedState();
    void EnsureGdkWindow();
    void SetUrgencyHint(GtkWidget* top_window, bool state);
-@@ -835,7 +839,9 @@ class nsWindow final : public nsBaseWidget {
+@@ -819,7 +823,9 @@ class nsWindow final : public nsBaseWidget {
     */
    RefPtr<mozilla::widget::IMContextWrapper> mIMContext;
  
