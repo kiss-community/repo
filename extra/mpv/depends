@@ -5,6 +5,7 @@ libass
 libxkbcommon
 linux-headers make
 mesa
+meson   make
 pkgconf make
 python  make
 wayland
