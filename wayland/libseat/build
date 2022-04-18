@@ -4,13 +4,12 @@
 # -Werror -> -Wsign-compare.
 export CFLAGS="-Wno-error $CFLAGS"
 
-meson \
-    --prefix=/usr \
-    -Ddefault_library=both \
-    . build
+muon setup \
+    -Dprefix=/usr \
+    build
 
 ninja -C build
-ninja -C build install
+muon  -C build install
 
 # Install runit service.
 mkdir -p "$1/etc/sv/seatd"
