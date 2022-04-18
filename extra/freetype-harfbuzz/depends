@@ -1,3 +1,3 @@
 libpng
-meson   make
-pkgconf make
+muon    make
+python  make
