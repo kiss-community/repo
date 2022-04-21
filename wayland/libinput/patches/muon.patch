@@ -1,0 +1,36 @@
+From 05501cd34f9cfc4a9f0eb6c9926e2bf09bdfffbe Mon Sep 17 00:00:00 2001
+From: illiliti <illiliti@protonmail.com>
+Date: Sun, 3 Jul 2022 18:14:15 +0300
+Subject: [PATCH] meson: use install_emptydir to create directory
+
+instead of install_subdir. Fixes muon - a strictly-conforming meson
+implementation which doesn't implement deprecated and broken-by-design
+functionality.
+
+For more info, see: https://mesonbuild.com/Reference-manual_functions.html#install_subdir
+
+Signed-off-by: illiliti <illiliti@protonmail.com>
+---
+ meson.build | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 160f39cb..4accfa89 100644
+--- a/meson.build
++++ b/meson.build
+@@ -329,7 +329,11 @@ libquirks = static_library('quirks', src_libquirks,
+ dep_libquirks = declare_dependency(link_with : libquirks)
+ 
+ # Create /etc/libinput
+-install_subdir('libinput', install_dir : dir_etc)
++if meson.version().version_compare('>= 0.60')
++	install_emptydir(dir_etc / 'libinput')
++else
++	install_subdir('libinput', install_dir : dir_etc)
++endif
+ 
+ ############ libinput.so ############
+ install_headers('src/libinput.h')
+-- 
+2.35.1
+

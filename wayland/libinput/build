@@ -1,6 +1,11 @@
 #!/bin/sh -e
 
 patch -p1 < evdev-wrap.patch
+patch -p1 < muon.patch
+
+# This needs investigation.
+sed 's/gnu99/gnu11/' meson.build > _
+mv -f _ meson.build
 
 export CFLAGS="$CFLAGS -fPIC"
 
@@ -25,17 +30,16 @@ export PKG_CONFIG_PATH="$PWD/usr/lib/pkgconfig"
 export CFLAGS="$CFLAGS -I$PWD/usr/include -L$PWD/usr/lib"
 export CFLAGS="$CFLAGS -I$PWD/usr/include/libevdev-1.0"
 
-meson \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --mandir=/usr/share/man \
-    --libexecdir=/usr/lib \
-    -Ddefault_library=both \
+muon setup \
+    -Dprefix=/usr \
+    -Dsysconfdir=/etc \
+    -Dmandir=/usr/share/man \
+    -Dlibexecdir=/usr/lib \
     -Ddebug-gui=false \
     -Ddocumentation=false \
     -Dtests=false \
     -Dlibwacom=false \
-    . output
+    output
 
 ninja -C output
-ninja -C output install
+muon  -C output install
