@@ -3,3 +3,4 @@ https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/archive/42.0/gsetting
 patches/01-no-fribidi.patch
 patches/02-fix-firefox.patch
 patches/03-no-accessibility.patch
+patches/04-muon.patch

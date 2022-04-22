@@ -1,0 +1,389 @@
+diff --git a/gdk/meson.build b/gdk/meson.build
+index 9270c972f2..0188ee4ec5 100644
+--- a/gdk/meson.build
++++ b/gdk/meson.build
+@@ -137,28 +137,93 @@ gdk_gresource_xml = configure_file(output : 'gdk.gresource.xml',
+   command : [find_program('gen-gdk-gresources-xml.py'),
+              meson.current_source_dir(), '@OUTPUT@'])
+ 
+-gdkresources = gnome.compile_resources('gdkresources',
+-  gdk_gresource_xml,
+-  source_dir: '.',
+-  c_name: '_gdk',
+-  extra_args: '--manual-register'
++gdkresources = []
++gdkresources += custom_target('gdkresources_h',
++  output: 'gdkresources.h',
++  input: gdk_gresource_xml,
++  command: [
++    find_program('glib-compile-resources'),
++    '--generate-header',
++    '--manual-register',
++    '--target=@OUTPUT@',
++    '--sourcedir=' + meson.current_source_dir(),
++    '--c-name=_gdk',
++    '@INPUT@',
++  ],
+ )
+ 
+-gdk_enums = gnome.mkenums('gdkenumtypes',
+-  sources: gdk_public_headers,
+-  c_template : 'gdkenumtypes.c.template',
+-  h_template : 'gdkenumtypes.h.template',
++gdkresources += custom_target('gdkresources_c',
++  output: 'gdkresources.c',
++  input: gdk_gresource_xml,
++  command: [
++    find_program('glib-compile-resources'),
++    '--generate-source',
++    '--manual-register',
++    '--target=@OUTPUT@',
++    '--sourcedir=' + meson.current_source_dir(),
++    '--c-name=_gdk',
++    '@INPUT@',
++  ],
++)
++
++gdk_enums = []
++gdk_enums += custom_target('gdkenumtypes_h',
++  capture: true,
++  output: 'gdkenumtypes.h',
++  input: gdk_public_headers,
+   install_dir: join_paths(gtk_includedir, 'gtk-3.0/gdk'),
+-  install_header : true)
++  install: true,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gdkenumtypes.h.template'),
++    '@INPUT@',
++  ],
++)
+ 
+-gdkenum_h = gdk_enums[1]
++gdk_enums += custom_target('gdkenumtypes_c',
++  capture: true,
++  output: 'gdkenumtypes.c',
++  input: gdk_public_headers,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gdkenumtypes.c.template'),
++    '@INPUT@',
++  ],
++)
+ 
+-gdk_marshalers = gnome.genmarshal('gdkmarshalers',
+-  sources : 'gdkmarshalers.list',
+-  prefix : '_gdk_marshal',
+-  valist_marshallers : true)
++gdkenum_h = gdk_enums[0]
++
++gdk_marshalers = []
++gdk_marshalers += custom_target('gdkmarshalers_h',
++  output: 'gdkmarshalers.h',
++  input: 'gdkmarshalers.list',
++  command: [
++    find_program('glib-genmarshal'),
++    '--valist-marshallers',
++    '--prefix=_gdk_marshal',
++    '--output=@OUTPUT@',
++    '--quiet',
++    '--header',
++    '@INPUT@',
++  ],
++)
++
++gdk_marshalers += custom_target('gdkmarshalers_c',
++  output: 'gdkmarshalers.c',
++  input: 'gdkmarshalers.list',
++  command: [
++    find_program('glib-genmarshal'),
++    '--valist-marshallers',
++    '--prefix=_gdk_marshal',
++    '--include-header=gdkmarshalers.h',
++    '--output=@OUTPUT@',
++    '--quiet',
++    '--body',
++    '@INPUT@',
++  ],
++)
+ 
+-gdkmarshal_h = gdk_marshalers[1]
++gdkmarshal_h = gdk_marshalers[0]
+ 
+ gdkconfig_cdata = configuration_data()
+ gdkconfig_cdata.set('GDK_WINDOWING_X11', x11_enabled)
+diff --git a/gtk/meson.build b/gtk/meson.build
+index c2e77b00b0..a08ca9872a 100644
+--- a/gtk/meson.build
++++ b/gtk/meson.build
+@@ -689,16 +689,38 @@ if sassc.found()
+   subdir('theme/HighContrast')
+ endif
+ 
+-gtkresources = gnome.compile_resources('gtkresources',
+-                                       gtk_gresources_xml,
+-                                       dependencies: theme_deps,
+-                                       source_dir: [
+-                                         # List in order of preference
+-                                         meson.current_build_dir(),
+-                                         meson.current_source_dir(),
+-                                       ],
+-                                       c_name: '_gtk',
+-                                       extra_args: '--manual-register')
++
++gtkresources = []
++gtkresources += custom_target('gtkresources_h',
++  output: 'gtkresources.h',
++  input: gtk_gresources_xml,
++  command: [
++    find_program('glib-compile-resources'),
++    '--generate-header',
++    '--manual-register',
++    '--target=@OUTPUT@',
++    '--sourcedir=' + meson.current_build_dir(),
++    '--sourcedir=' + meson.current_source_dir(),
++    '--c-name=_gtk',
++    '@INPUT@',
++  ],
++)
++
++gtkresources += custom_target('gtkresources_c',
++  output: 'gtkresources.c',
++  input: gtk_gresources_xml,
++  depends: theme_deps,
++  command: [
++    find_program('glib-compile-resources'),
++    '--generate-source',
++    '--manual-register',
++    '--target=@OUTPUT@',
++    '--sourcedir=' + meson.current_build_dir(),
++    '--sourcedir=' + meson.current_source_dir(),
++    '--c-name=_gtk',
++    '@INPUT@',
++  ],
++)
+ 
+ gtk_use_x11_sources = files([
+   'gtkplug.c',
+@@ -745,32 +767,116 @@ gtk_use_quartz_sources = files(
+ 
+ gtk_stub_sources = files('gtkmountoperation-stub.c')
+ 
+-gtk_dbus_src = gnome.gdbus_codegen('gtkdbusgenerated', 'gtkdbusinterfaces.xml',
+-                                   interface_prefix: 'org.Gtk.',
+-                                   namespace: '_Gtk')
++gtk_dbus_src = []
++gtk_dbus_src += custom_target('gtkdbusgenerated_h',
++  output: 'gtkdbusgenerated.h',
++  input: 'gtkdbusinterfaces.xml',
++  command: [
++    find_program('gdbus-codegen'),
++    '--interface-prefix=org.Gtk.',
++    '--c-namespace=_Gtk',
++    '--output=@OUTPUT@',
++    '--header',
++    '@INPUT@',
++  ],
++)
+ 
+-gtkmarshalers = gnome.genmarshal('gtkmarshalers',
+-                                 sources: 'gtkmarshalers.list',
+-                                 prefix: '_gtk_marshal',
+-                                 valist_marshallers: true)
++gtk_dbus_src += custom_target('gtkdbusgenerated_c',
++  output: 'gtkdbusgenerated.c',
++  input: 'gtkdbusinterfaces.xml',
++  command: [
++    find_program('gdbus-codegen'),
++    '--interface-prefix=org.Gtk.',
++    '--c-namespace=_Gtk',
++    '--output=@OUTPUT@',
++    '--body',
++    '@INPUT@',
++  ],
++)
+ 
+-gtkmarshal_h = gtkmarshalers[1]
++gtkmarshalers = []
++gtkmarshalers += custom_target('gtkmarshalers_h',
++  output: 'gtkmarshalers.h',
++  input: 'gtkmarshalers.list',
++  command: [
++    find_program('glib-genmarshal'),
++    '--valist-marshallers',
++    '--prefix=_gtk_marshal',
++    '--output=@OUTPUT@',
++    '--quiet',
++    '--header',
++    '@INPUT@',
++  ]
++)
+ 
+-gtktypebuiltins = gnome.mkenums('gtktypebuiltins',
+-                                sources: gtk_public_headers + gtk_deprecated_headers,
+-                                c_template: 'gtktypebuiltins.c.template',
+-                                h_template: 'gtktypebuiltins.h.template',
+-                                install_dir: join_paths(gtk_includedir, 'gtk-3.0/gtk'),
+-                                install_header: true)
++gtkmarshalers += custom_target('gtkmarshalers_c',
++  output: 'gtkmarshalers.c',
++  input: 'gtkmarshalers.list',
++  command: [
++    find_program('glib-genmarshal'),
++    '--valist-marshallers',
++    '--include-header=gtkmarshalers.h',
++    '--prefix=_gtk_marshal',
++    '--output=@OUTPUT@',
++    '--quiet',
++    '--body',
++    '@INPUT@',
++  ]
++)
+ 
+-gtktypebuiltins_h = gtktypebuiltins[1]
++gtkmarshal_h = gtkmarshalers[0]
++
++gtktypebuiltins = []
++gtktypebuiltins += custom_target('gtktypebuiltins_h',
++  capture: true,
++  output: 'gtktypebuiltins.h',
++  input: gtk_public_headers + gtk_deprecated_headers,
++  install_dir: join_paths(gtk_includedir, 'gtk-3.0/gtk'),
++  install: true,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gtktypebuiltins.h.template'),
++    '@INPUT@',
++  ],
++)
+ 
+-gtkprivatetypebuiltins = gnome.mkenums('gtkprivatetypebuiltins',
+-                                       sources: gtk_private_type_headers,
+-                                       c_template: 'gtkprivatetypebuiltins.c.template',
+-                                       h_template: 'gtkprivatetypebuiltins.h.template')
++gtktypebuiltins += custom_target('gtktypebuiltins_c',
++  capture: true,
++  output: 'gtktypebuiltins.c',
++  input: gtk_public_headers + gtk_deprecated_headers,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gtktypebuiltins.c.template'),
++    '@INPUT@',
++  ],
++)
++
++gtktypebuiltins_h = gtktypebuiltins[0]
++
++gtkprivatetypebuiltins = []
++gtkprivatetypebuiltins += custom_target('gtkprivatetypebuiltins_h',
++  capture: true,
++  output: 'gtkprivatetypebuiltins.h',
++  input: gtk_private_type_headers,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gtkprivatetypebuiltins.h.template'),
++    '@INPUT@',
++  ],
++)
++
++gtkprivatetypebuiltins += custom_target('gtkprivatetypebuiltins_c',
++  capture: true,
++  output: 'gtkprivatetypebuiltins.c',
++  input: gtk_private_type_headers,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gtkprivatetypebuiltins.c.template'),
++    '@INPUT@',
++  ],
++)
+ 
+-gtkprivatetypebuiltins_h = gtkprivatetypebuiltins[1]
++gtkprivatetypebuiltins_h = gtkprivatetypebuiltins[0]
+ 
+ # Generate gtktypefuncs.inc
+ typefuncs = custom_target('gtktypefuncs.inc',
+@@ -926,9 +1032,17 @@ gtk_settings_schemas = [
+   'org.gtk.Settings.Debug.gschema.xml',
+ ]
+ install_data(gtk_settings_schemas, install_dir: gtk_schemasdir)
+-gnome.compile_schemas(depend_files: files(gtk_settings_schemas),
+-                      build_by_default: true)
+ gtk_schema_build_dir = meson.current_build_dir()
++custom_target('glib-compile-schemes',
++  depend_files: files(gtk_settings_schemas),
++  build_by_default: true,
++  output: 'gschemas.compiled',
++  command: [
++    find_program('glib-compile-schemas'),
++    '--targetdir=' + gtk_schema_build_dir,
++    meson.current_source_dir(),
++  ],
++)
+ 
+ # Check for more things
+ if cc.has_header('langinfo.h')
+@@ -1015,22 +1129,22 @@ libgtk_dep = declare_dependency(sources: gtk_dep_sources,
+                                 link_with: libgtk,
+                                 link_args: common_ldflags)
+ 
+-foreach lang : [ 'de', 'fr', 'es', 'zh' ]
+-  conf = configuration_data()
+-  conf.set('lang', lang)
+-  resxml = configure_file(input: 'emoji/gresource.xml.in',
+-                          output: lang + '.gresource.xml',
+-                          configuration: conf
+-  )
+-
+-  gnome.compile_resources(lang,
+-    resxml,
+-    source_dir: 'emoji',
+-    gresource_bundle: true,
+-    install: true,
+-    install_dir: join_paths(gtk_datadir, 'gtk-3.0', 'emoji'),
+-  )
+-endforeach
++# foreach lang : [ 'de', 'fr', 'es', 'zh' ]
++#   conf = configuration_data()
++#   conf.set('lang', lang)
++#   resxml = configure_file(input: 'emoji/gresource.xml.in',
++#                           output: lang + '.gresource.xml',
++#                           configuration: conf
++#   )
++
++#   gnome.compile_resources(lang,
++#     resxml,
++#     source_dir: 'emoji',
++#     gresource_bundle: true,
++#     install: true,
++#     install_dir: join_paths(gtk_datadir, 'gtk-3.0', 'emoji'),
++#   )
++# endforeach
+ 
+ 
+ if quartz_enabled
+diff --git a/meson.build b/meson.build
+index 9e791fdd33..17e831796b 100644
+--- a/meson.build
++++ b/meson.build
+@@ -993,13 +993,6 @@ subdir('docs/reference')
+ install_data('m4macros/gtk-3.0.m4', install_dir: join_paths(get_option('datadir'), 'aclocal'))
+ 
+ if not meson.is_cross_build()
+-  if meson.version().version_compare('>=0.57.0')
+-    gnome.post_install(
+-      glib_compile_schemas: true,
+-      gio_querymodules: gio_module_dirs,
+-      gtk_update_icon_cache: get_option('demos'),
+-    )
+-  else
+     # Keep this in sync with post-install.py expected arguments
+     meson.add_install_script('build-aux/meson/post-install.py',
+                              gtk_api_version,
+@@ -1007,7 +1000,6 @@ if not meson.is_cross_build()
+                              join_paths(gtk_prefix, get_option('bindir')),
+                              gtk_libdir,
+                              gtk_datadir)
+-  endif
+ else
+   message('Not executing post-install steps automatically when cross compiling')
+ endif

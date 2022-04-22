@@ -4,6 +4,11 @@ for p in *.patch; do
     patch -p1 < "$p"
 done
 
+# Patch merged upstream
+# https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4615
+sed "s/'\(true\|false\)'/\1/" meson_options.txt > _
+mv -f _ meson_options.txt
+
 # Don't enable native language support and don't compile schemas.
 sed -e '/compile_schemas/s/true/false/' \
     -e '/ENABLE_NLS/s/1/0/' \
@@ -11,7 +16,7 @@ sed -e '/compile_schemas/s/true/false/' \
     meson.build > _
 mv -f _ meson.build
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     -Dx11_backend=false \
     -Dwayland_backend=true \
@@ -24,20 +29,22 @@ meson setup \
     output
 
 ninja -C output
-meson install -C output
+muon  -C output install
 
 # GTK+3 on Wayland requires gsettings-desktop-schemas for gsettings to work
 # correctly. Under X11 it made use of xsettings but this is no longer the case.
 (
     cd schemas
 
-    meson \
-        --prefix=/usr \
+    : > po/meson.build
+
+    muon setup \
+        -Dprefix=/usr \
         -Dintrospection=false \
-        . output
+        output
 
     ninja -C output
-    ninja -C output install
+    muon  -C output install
 )
 
 # We don't compile with librsvg which leads to this utility solely causing
