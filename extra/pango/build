@@ -2,20 +2,20 @@
 
 patch -p1 < no-fribidi.patch
 
-# Disable download of missing (optional) dependencies
-# during the build. This cannot be turned off otherwise.
-rm -rf subprojects
+# Muon doesn't support gnome module.
+patch -p1 < muon.patch
 
 : > tests/meson.build
 : > examples/meson.build
 : > docs/meson.build
 
-meson \
-    --prefix=/usr \
+muon setup \
+    -Dprefix=/usr \
     -Dgtk_doc=false \
     -Dxft=disabled \
     -Dintrospection=disabled \
-    . build
+    -Dwrap_mode=nofallback \
+    build
 
 ninja -C build
-ninja -C build install
+muon  -C build install

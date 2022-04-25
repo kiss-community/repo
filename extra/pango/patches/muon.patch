@@ -1,0 +1,44 @@
+diff --git a/pango/meson.build b/pango/meson.build
+index f344bc8b..28650966 100644
+--- a/pango/meson.build
++++ b/pango/meson.build
+@@ -84,15 +84,32 @@ pango_features_h = configure_file(
+ )
+ 
+ # Enumerations for GType
+-pango_enums = gnome.mkenums(
+-  'pango-enum-types',
+-  sources: pango_headers,
+-  c_template: 'pango-enum-types.c.template',
+-  h_template: 'pango-enum-types.h.template',
++pango_enums = []
++pango_enums += custom_target('pango-enum-types_h',
++  capture: true,
++  output: 'pango-enum-types.h',
++  input: pango_headers,
+   install_dir: join_paths(pango_includedir, pango_api_path),
+-  install_header: true,
++  install: true,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('pango-enum-types.h.template'),
++    '@INPUT@',
++  ],
++)
++
++pango_enums += custom_target('pango-enum-types_c',
++  capture: true,
++  output: 'pango-enum-types.c',
++  input: pango_headers,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('pango-enum-types.c.template'),
++    '@INPUT@',
++  ],
+ )
+-pango_enum_h = pango_enums[1]
++
++pango_enum_h = pango_enums[0]
+ 
+ if host_system == 'windows'
+   pango_rc = configure_file(

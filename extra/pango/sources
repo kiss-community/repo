@@ -1,2 +1,3 @@
 https://github.com/GNOME/pango/archive/VERSION.tar.gz
+patches/muon.patch
 patches/no-fribidi.patch
