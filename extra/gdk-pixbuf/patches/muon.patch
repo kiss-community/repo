@@ -1,0 +1,80 @@
+diff --git a/gdk-pixbuf/meson.build b/gdk-pixbuf/meson.build
+index 54ff9dda3..8f09292d8 100644
+--- a/gdk-pixbuf/meson.build
++++ b/gdk-pixbuf/meson.build
+@@ -120,19 +120,62 @@ gdkpixdata_sources = [
+   'gdk-pixdata.c',
+ ]
+ 
+-gdkpixbuf_marshals = gnome.genmarshal('gdk-pixbuf-marshal',
+-                                      sources: 'gdk-pixbuf-marshal.list',
+-                                      prefix: '_gdk_pixbuf_marshal',
+-                                      install_header: true,
+-                                      install_dir: join_paths(gdk_pixbuf_includedir, gdk_pixbuf_api_path))
+-
+-gdkpixbuf_enums = gnome.mkenums('gdk-pixbuf-enum-types',
+-                                sources: gdkpixbuf_headers,
+-                                c_template: 'gdk-pixbuf-enum-types.c.template',
+-                                h_template: 'gdk-pixbuf-enum-types.h.template',
+-                                install_header: true,
+-                                install_dir: join_paths(gdk_pixbuf_includedir, gdk_pixbuf_api_path))
+-gdkpixbuf_enum_h = gdkpixbuf_enums[1]
++gdkpixbuf_marshals = []
++gdkpixbuf_marshals += custom_target('gdb-pixbuf-marshal_h',
++  output: 'gdk-pixbuf-marshal.h',
++  input: 'gdk-pixbuf-marshal.list',
++  install: true,
++  install_dir: join_paths(gdk_pixbuf_includedir, gdk_pixbuf_api_path),
++  command: [
++    find_program('glib-genmarshal'),
++    '--prefix=_gdk_pixbuf_marshal',
++    '--output=@OUTPUT@',
++    '--quiet',
++    '--header',
++    '@INPUT@',
++  ],
++)
++
++gdkpixbuf_marshals += custom_target('gdb-pixbuf-marshal_c',
++  output: 'gdk-pixbuf-marshal.c',
++  input: 'gdk-pixbuf-marshal.list',
++  command: [
++    find_program('glib-genmarshal'),
++    '--prefix=_gdk_pixbuf_marshal',
++    '--include-header=gdk-pixbuf-marshal.h',
++    '--output=@OUTPUT@',
++    '--quiet',
++    '--body',
++    '@INPUT@',
++  ],
++)
++
++gdkpixbuf_enums = []
++gdkpixbuf_enums += custom_target('gdk-pixbuf-enum-types_h',
++  capture: true,
++  output: 'gdk-pixbuf-enum-types.h',
++  input: gdkpixbuf_headers,
++  install: true,
++  install_dir: join_paths(gdk_pixbuf_includedir, gdk_pixbuf_api_path),
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gdk-pixbuf-enum-types.h.template'),
++    '@INPUT@',
++  ],
++)
++
++gdkpixbuf_enums += custom_target('gdk-pixbuf-enum-types_c',
++  capture: true,
++  output: 'gdk-pixbuf-enum-types.c',
++  input: gdkpixbuf_headers,
++  command: [
++    find_program('glib-mkenums'),
++    '--template', files('gdk-pixbuf-enum-types.c.template'),
++    '@INPUT@',
++  ],
++)
++
++gdkpixbuf_enum_h = gdkpixbuf_enums[0]
+ 
+ if host_system == 'windows'
+   gdk_pixbuf_win_rc = configure_file(

@@ -1,5 +1,4 @@
 glib
 libjpeg-turbo
 libpng
-meson   make
-pkgconf make
+muon    make

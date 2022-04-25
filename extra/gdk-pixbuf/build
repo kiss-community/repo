@@ -1,9 +1,15 @@
 #!/bin/sh -e
 
-meson \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --mandir=/usr/share/man \
+# Muon doesn't support gnome module.
+patch -p1 < muon.patch
+
+: > tests/meson.build
+: > po/meson.build
+
+muon setup \
+    -Dprefix=/usr \
+    -Dsysconfdir=/etc \
+    -Dmandir=/usr/share/man \
     -Ddebug=false \
     -Djpeg=enabled \
     -Dpng=enabled \
@@ -15,7 +21,7 @@ meson \
     -Dinstalled_tests=false \
     -Dbuiltin_loaders=all \
     -Dwrap_mode=nofallback \
-    . output
+    output
 
 ninja -C output
-ninja -C output install
+muon  -C output install
