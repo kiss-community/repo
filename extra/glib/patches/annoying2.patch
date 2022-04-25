@@ -1,0 +1,127 @@
+From c2a7ef90a7ead94edfa2792aff4bf096bc2c2e35 Mon Sep 17 00:00:00 2001
+From: illiliti <illiliti@protonmail.com>
+Date: Mon, 19 Sep 2022 21:59:57 +0300
+Subject: [PATCH] Revert "meson: simplify iconv lookups using Meson's builtin
+ dependency lookup"
+
+This reverts commit 24ec80cfb4522d9819dbf5fd117665fef20b6418.
+---
+ .gitlab-ci.yml                   |  5 +++--
+ docs/reference/glib/building.xml | 18 +++++++++++-------
+ meson.build                      | 20 ++++++++++++++++++--
+ meson_options.txt                |  2 +-
+ 4 files changed, 33 insertions(+), 12 deletions(-)
+
+diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml
+index 3b6f44ea6..2ad2ce644 100644
+--- a/.gitlab-ci.yml
++++ b/.gitlab-ci.yml
+@@ -386,10 +386,11 @@ freebsd-12-x86_64:
+     - bash .gitlab-ci/show-execution-environment.sh
+   script:
+     # We cannot use -Wl,--no-undefined because GLib uses 'environ' variable.
++    # FreeBSD iconv doesn't handle transliteration, so we use (external) GNU libiconv here.
+     # FreeBSD supports xattr, but its API is different from Linux xattr.
+     # FIXME: extattr(2) support: https://gitlab.gnome.org/GNOME/glib/issues/1404
+     # localstatedir is needed for access to /var/lib/dbus/machine-id
+-    - meson ${MESON_COMMON_OPTIONS} --localstatedir=/var -Db_lundef=false -Dxattr=false _build
++    - meson ${MESON_COMMON_OPTIONS} --localstatedir=/var -Db_lundef=false -Diconv=external -Dxattr=false _build
+     - ninja -C _build
+     - bash -x ./.gitlab-ci/run-tests.sh
+   artifacts:
+@@ -416,7 +417,7 @@ freebsd-13-x86_64:
+   before_script:
+     - bash .gitlab-ci/show-execution-environment.sh
+   script:
+-    - meson ${MESON_COMMON_OPTIONS} --localstatedir=/var -Db_lundef=false -Dxattr=false _build
++    - meson ${MESON_COMMON_OPTIONS} --localstatedir=/var -Db_lundef=false -Diconv=external -Dxattr=false _build
+     - ninja -C _build
+     - bash -x ./.gitlab-ci/run-tests.sh
+   artifacts:
+diff --git a/docs/reference/glib/building.xml b/docs/reference/glib/building.xml
+index f8a71db7d..34e823727 100644
+--- a/docs/reference/glib/building.xml
++++ b/docs/reference/glib/building.xml
+@@ -29,7 +29,7 @@
+ 
+       On FreeBSD:
+       <literallayout>
+-        <userinput>env CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -Wl,--disable-new-dtags" meson -Dxattr=false -Dinstalled_tests=true -Db_lundef=false _build</userinput>
++        <userinput>env CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -Wl,--disable-new-dtags" meson -Dxattr=false -Dinstalled_tests=true -Diconv=external -Db_lundef=false _build</userinput>
+         <userinput>ninja -C _build</userinput>
+       </literallayout>
+     </para>
+@@ -98,12 +98,16 @@
+         </para>
+         <para>
+           If your system has an <function>iconv()</function> implementation but
+-          you want to use libiconv instead, make sure it is installed to the
+-          default compiler header/library search path (for instance, in
+-          <filename>/usr/local/</filename>). The <filename>iconv.h</filename>
+-          that libiconv installs hides the system iconv. Meson then detects
+-          this, recognizes that the system iconv is unusable and the external
+-          one is mandatory, and automatically forces it to be used.
++          you want to use libiconv instead, you can pass the
++          <option>-Diconv=gnu</option> option to <command>meson</command>. This
++          forces libiconv to be used.
++        </para>
++        <para>
++          Note that if you have libiconv installed in your default include
++          search path (for instance, in <filename>/usr/local/</filename>), but
++          don't enable it, you will get an error while compiling GLib because
++          the <filename>iconv.h</filename> that libiconv installs hides the
++          system iconv.
+         </para>
+         <para>
+           If you are using the native iconv implementation on Solaris
+diff --git a/meson.build b/meson.build
+index 3aa1a10a2..0599bb8a6 100644
+--- a/meson.build
++++ b/meson.build
+@@ -2035,12 +2035,28 @@ glibconfig_conf.set10('G_HAVE_GROWING_STACK', growing_stack)
+ # We should never use the MinGW C library's iconv because it may not be
+ # available in the actual runtime environment. On Windows, we always use
+ # the built-in implementation
++iconv_opt = get_option('iconv')
+ if host_system == 'windows'
++  libiconv = []
+   # We have a #include "win_iconv.c" in gconvert.c on Windows, so we don't need
+   # any external library for it
+-  libiconv = []
++  if iconv_opt != 'auto'
++    warning('-Diconv was set to @0@, which was ignored')
++  endif
+ else
+-  libiconv = dependency('iconv')
++  found_iconv = false
++  if ['auto', 'libc'].contains(iconv_opt) and cc.has_function('iconv_open')
++    libiconv = []
++    found_iconv = true
++  endif
++  if not found_iconv and ['auto', 'external'].contains(iconv_opt) and cc.has_header_symbol('iconv.h', 'iconv_open')
++    libiconv = [cc.find_library('iconv')]
++    found_iconv = true
++  endif
++
++  if not found_iconv
++    error('iconv implementation "@0@" not found'.format(iconv_opt))
++  endif
+ endif
+ 
+ pcre2 = dependency('libpcre2-8', version: '>= 10.32', required : false)
+diff --git a/meson_options.txt b/meson_options.txt
+index f13cbfdd5..c42421434 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -7,7 +7,7 @@ option('iconv',
+        type : 'combo',
+        choices : ['auto', 'libc', 'external'],
+        value : 'auto',
+-       deprecated: true,)
++       description : 'iconv implementation to use (\'libc\' = \'Part of the C library\'; \'external\' = \'External libiconv\'; \'auto\' = \'Auto-detect which iconv is available\')')
+ 
+ option('charsetalias_dir',
+        type : 'string',
+-- 
+2.35.1
+

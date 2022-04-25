@@ -1,0 +1,40 @@
+From 4a4d9eb6624b69328fa9749236c0b4236932ceb8 Mon Sep 17 00:00:00 2001
+From: Eli Schwartz <eschwartz@archlinux.org>
+Date: Mon, 7 Mar 2022 22:03:03 -0500
+Subject: [PATCH] meson: simplify lookup of python command
+
+It can be treated like any other command, we don't need a full blown
+module capable of building extensions just to get an ExternalProgram
+executable that can be used to run scripts.
+
+Since find_program has a builtin kwarg for requiring a given version, we
+can avoid manually coding some checks and emitting a custom error.
+---
+ meson.build | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index e0b14319fb..e87433a674 100644
+--- a/meson.build
++++ b/meson.build
+@@ -2271,16 +2271,10 @@ endif
+ 
+ glib_conf.set('HAVE_PROC_SELF_CMDLINE', have_proc_self_cmdline)
+ 
+-python = import('python').find_installation('python3')
++python = find_program('python3', version: '>=3.5')
+ # used for '#!/usr/bin/env <name>'
+ python_name = 'python3'
+ 
+-python_version = python.language_version()
+-python_version_req = '>=3.5'
+-if not python_version.version_compare(python_version_req)
+-  error('Requires Python @0@, @1@ found.'.format(python_version_req, python_version))
+-endif
+-
+ # Determine which user environment-dependent files that we want to install
+ have_bash = find_program('bash', required : false).found() # For completion scripts
+ bash_comp_dep = dependency('bash-completion', version: '>=2.0', required: false)
+-- 
+GitLab
+

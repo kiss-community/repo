@@ -1,19 +1,29 @@
 #!/bin/sh -e
 
+# Patch merged upstream.
+# https://gitlab.gnome.org/GNOME/glib/-/merge_requests/2541
+patch -p1 < muon.patch
+
+# Stop
+patch -p1 < annoying.patch
+
+# Just stop
+patch -p1 < annoying2.patch
+
 : > fuzzing/meson.build
 
-meson \
-    --prefix=/usr \
+muon setup \
+    -Dprefix=/usr \
     -Dlibmount=disabled \
     -Dinstalled_tests=false \
-    -Ddefault_library=both \
     -Dman=false \
     -Dtests=false \
     -Dlibelf=disabled \
     -Dnls=disabled \
-    . build
+    -Dgtk_doc=false \
+    build
 
 ninja -C build
-ninja -C build install
+muon  -C build install
 
 rm -rf "$1/usr/bin/gdbus"

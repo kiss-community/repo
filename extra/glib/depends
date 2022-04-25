@@ -1,5 +1,5 @@
 libffi
-meson   make
+muon    make
 pcre2
-pkgconf make
+python  make
 zlib
