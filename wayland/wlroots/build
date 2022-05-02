@@ -1,12 +1,11 @@
 #!/bin/sh -e
 
-meson \
-    --prefix=/usr \
-    -Ddefault_library=both \
+muon setup \
+    -Dprefix=/usr \
     -Dexamples=false \
     -Dxcb-errors=disabled \
     -Drenderers=gles2 \
-    . build
+    build
 
 ninja -C build
-ninja -C build install
+muon  -C build install
