@@ -25,9 +25,9 @@ mv -f _ rules/meson.build
 sed "/subdir('po')/d" meson.build > _
 mv -f _ meson.build
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     output
 
 ninja -C output
-ninja -C output install
+muon  -C output install
