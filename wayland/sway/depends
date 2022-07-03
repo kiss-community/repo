@@ -6,11 +6,10 @@ libseat
 libxkbcommon
 linux-headers make
 mesa
-meson make
+muon make
 pango
 pcre2
 pixman
-pkgconf make
 wayland
 wayland-protocols make
 wlroots

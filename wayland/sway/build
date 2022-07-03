@@ -11,14 +11,15 @@ sed 's/0.25f, 0.25f, 0.25f/0.929, 0.870, 0.678/' \
     sway/desktop/render.c > _
 mv -f _ sway/desktop/render.c
 
-meson \
-    --prefix=/usr \
+muon setup \
+    -Dprefix=/usr \
     -Ddefault-wallpaper=false \
     -Dzsh-completions=false \
     -Dbash-completions=false \
     -Dfish-completions=false \
     -Dxwayland=disabled \
-    . build
+    -Dsd-bus-provider=libsystemd \
+    build
 
 ninja -C build
-ninja -C build install
+muon  -C build install
