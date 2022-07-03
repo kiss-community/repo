@@ -10,7 +10,7 @@ mv -f _ sway/desktop/render.c
 # Build fails with clang due to -Werror.
 export CFLAGS="$CFLAGS -Wno-unused-function -Wno-error"
 
-meson \
+muon setup \
     -Dprefix=/usr \
     -Dswaybar=false \
     -Dswaynag=false \
@@ -23,9 +23,11 @@ meson \
     -Dwlroots:xcb-errors=disabled \
     -Dwlroots:default_library=static \
     -Dseatd:libseat-builtin=enabled \
+    -Dseatd:libseat-logind=disabled \
     -Dseatd:default_library=static \
-    --force-fallback-for=wlroots,seatd \
-    . output
+    -Dforce_fallback_for=wlroots,libseat \
+    -Dsd-bus-provider=libsystemd \
+    output
 
 ninja -C output
 

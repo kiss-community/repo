@@ -3,8 +3,7 @@ libinput
 libxkbcommon
 linux-headers make
 mesa
-meson make
+muon make
 pixman
-pkgconf make
 wayland
 wayland-protocols make
