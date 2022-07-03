@@ -13,8 +13,8 @@ sed 's/0.25f, 0.25f, 0.25f/0.929, 0.870, 0.678/' \
     sway/desktop/render.c > _
 mv -f _ sway/desktop/render.c
 
-meson \
-    --prefix=/usr \
+muon setup \
+    -Dprefix=/usr \
     -Ddefault-wallpaper=false \
     -Dzsh-completions=false \
     -Dbash-completions=false \
@@ -24,9 +24,11 @@ meson \
     -Dwlroots:xcb-errors=disabled \
     -Dwlroots:default_library=static \
     -Dseatd:libseat-builtin=enabled \
+    -Dseatd:libseat-logind=disabled \
     -Dseatd:default_library=static \
-    --force-fallback-for=wlroots,seatd \
-    . build
+    -Dforce_fallback_for=wlroots,libseat \
+    -Dsd-bus-provider=libsystemd \
+    build
 
 ninja -C build
-meson install -C build --skip-subprojects
+muon  -C build install
