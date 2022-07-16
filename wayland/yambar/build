@@ -12,6 +12,6 @@ DESTDIR="$1" ninja -C build install
 rm -rf "$1/usr/share/zsh"
 
 # remove man doc if mandoc not installed
-if kiss search mandoc 2>/dev/null 1>/dev/null; then
+if ! kiss search mandoc 2>/dev/null 1>/dev/null; then
 	rm -rf "$1/usr/share/man"
 fi
