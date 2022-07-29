@@ -1,0 +1,4 @@
+git+git://git.2f30.org/sdhcp
+files/sdhcp.run
+patches/upinterface.diff
+patches/req_mask_router_dns_opts.diff

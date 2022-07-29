@@ -1,0 +1,2 @@
+#!/bin/sh
+exec sdhcp -f 2>&1

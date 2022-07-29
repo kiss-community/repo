@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+patch -p1 < upinterface.diff
+patch -p1 < req_mask_router_dns_opts.diff
+
+make
+make PREFIX="/usr" DESTDIR="$1" install
+
+# Install runit service.
+mkdir -p "$1/etc/sv/sdhcp"
+cp -f sdhcp.run "$1/etc/sv/sdhcp/run"
+ln -sf /run/runit/supervise.sdhcp "$1/etc/sv/sdhcp/supervise"

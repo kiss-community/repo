@@ -1,0 +1,21 @@
+diff --git a/sdhcp.c b/sdhcp.c
+index 1fcf5e6..fdbdf69 100644
+--- a/sdhcp.c
++++ b/sdhcp.c
+@@ -555,6 +555,16 @@ main(int argc, char *argv[])
+ 		eprintf("setsockopt:");
+ 
+ 	strlcpy(ifreq.ifr_name, ifname, IF_NAMESIZE);
++
++	if (ioctl(sock, SIOCGIFFLAGS, &ifreq) == -1)
++		eprintf("ioctl:");
++
++	if (!(ifreq.ifr_flags&IFF_UP))
++		ifreq.ifr_flags ^= IFF_UP;
++
++	if (ioctl(sock, SIOCSIFFLAGS, &ifreq) == -1)
++		eprintf("ioctl:");
++
+ 	ioctl(sock, SIOCGIFINDEX, &ifreq);
+ 	if (setsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE, &ifreq, sizeof(ifreq)) == -1)
+ 		eprintf("setsockopt:");

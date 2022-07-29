@@ -1,0 +1,20 @@
+diff --git a/sdhcp.c b/sdhcp.c
+index 1fcf5e6..7e3f7f5 100644
+--- a/sdhcp.c
++++ b/sdhcp.c
+@@ -267,6 +267,7 @@ hnoptput(unsigned char *p, int opt, uint32_t data, size_t len)
+ static void
+ dhcpsend(int type, int how)
+ {
++	static unsigned char params[] = { OBmask, OBrouter, OBdnsserver };
+ 	unsigned char *ip, *p;
+ 
+ 	memset(&bp, 0, sizeof(bp));
+@@ -290,6 +291,7 @@ dhcpsend(int type, int how)
+ 		/* memcpy(bp.ciaddr, client, sizeof bp.ciaddr); */
+ 		p = optput(p, ODipaddr, client, sizeof(client));
+ 		p = optput(p, ODserverid, server, sizeof(server));
++		p = optput(p, ODparams, params, sizeof(params));
+ 		break;
+ 	case DHCPrelease:
+ 		memcpy(bp.ciaddr, client, sizeof(client));
