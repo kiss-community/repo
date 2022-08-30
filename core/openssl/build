@@ -1,13 +1,5 @@
 #!/bin/sh -e
 
-./Configure \
-    --prefix=/usr \
-    --openssldir=/etc/ssl \
-    --libdir=lib \
-    no-unit-test \
-    shared \
-    linux-x86_64
-
 make depend
 make
 
