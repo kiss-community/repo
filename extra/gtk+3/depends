@@ -3,6 +3,7 @@ fontconfig
 freetype-harfbuzz
 gdk-pixbuf
 glib
+libepoxy
 libxkbcommon
 mesa
 meson   make
