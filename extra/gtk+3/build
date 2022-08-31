@@ -1,0 +1,58 @@
+#!/bin/sh -e
+
+for p in *.patch; do
+    patch -p1 < "$p"
+done
+
+# Don't enable native language support and don't compile schemas.
+sed -e '/compile_schemas/s/true/false/' \
+    -e '/ENABLE_NLS/s/1/0/' \
+    -e "/subdir('po/d" \
+    meson.build > _
+mv -f _ meson.build
+
+meson setup \
+    -Dprefix=/usr \
+    -Dx11_backend=false \
+    -Dwayland_backend=true \
+    -Dprint_backends=file,lpr \
+    -Dcolord=no \
+    -Dintrospection=false \
+    -Ddemos=false \
+    -Dexamples=false \
+    -Dtests=false \
+    -Dlibepoxy:default_library=static \
+    -Dlibepoxy:egl=yes \
+    -Dlibepoxy:tests=false \
+    -Dlibepoxy:glx=no \
+    -Dlibepoxy:x11=false \
+    --force-fallback-for=libepoxy \
+    output
+
+ninja -C output
+meson install -C output --skip-subprojects
+
+# GTK+3 on Wayland requires gsettings-desktop-schemas for gsettings to work
+# correctly. Under X11 it made use of xsettings but this is no longer the case.
+(
+    cd schemas
+
+    meson \
+        --prefix=/usr \
+        -Dintrospection=false \
+        . output
+
+    ninja -C output
+    ninja -C output install
+)
+
+# We don't compile with librsvg which leads to this utility solely causing
+# compiler errors for some packages. It has no use at all.
+rm -f "$1/usr/bin/gtk-encode-symbolic-svg"
+
+# Remove libepoxy and its references from installed pkg-config files. The build
+# system should have done this for us as it is statically linked.
+for f in "$1/usr/lib/pkgconfig/"*.pc; do
+    sed 's/epoxy >= 1.4//' "$f" > _
+    mv -f _ "$f"
+done

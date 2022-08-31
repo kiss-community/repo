@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+mv Modules/* cmake/modules/
+
+# Remove ncurses dependency.
+sed 's/\(LLVM_ENABLE_TERMINFO\) 1/\1 2/' \
+    cmake/config-ix.cmake > _
+mv -f _ cmake/config-ix.cmake
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_BUILD_LLVM_DYLIB=ON \
+    -DLLVM_LINK_LLVM_DYLIB=ON \
+    -DLLVM_TARGETS_TO_BUILD="host;AMDGPU" \
+    -DLLVM_ENABLE_RTTI=ON \
+    -DLLVM_HOST_TRIPLE="$(cc -dumpmachine)" \
+    -DLLVM_INCLUDE_BENCHMARKS=OFF \
+    -DLLVM_INCLUDE_EXAMPLES=OFF \
+    -DLLVM_INCLUDE_DOCS=OFF \
+    -DLLVM_INCLUDE_TESTS=OFF \
+    -DLLVM_ENABLE_TERMINFO=OFF \
+    -DLLVM_ENABLE_LIBXML2=OFF \
+    -Wno-dev
+
+cmake --build   build
+cmake --install build

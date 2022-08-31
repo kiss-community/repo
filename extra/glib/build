@@ -1,0 +1,25 @@
+#!/bin/sh -e
+
+# static_assert is not defined in C99.
+export CFLAGS="$CFLAGS -std=gnu11"
+
+# Remove 'util-linux' dependency.
+sed 's/libmount_dep.found()/false/' meson.build > _
+mv -f _ meson.build
+
+: > fuzzing/meson.build
+
+meson \
+    --prefix=/usr \
+    -Dlibmount=disabled \
+    -Dinstalled_tests=false \
+    -Ddefault_library=both \
+    -Dman=false \
+    -Dtests=false \
+    -Dlibelf=disabled \
+    . build
+
+ninja -C build
+ninja -C build install
+
+rm -rf "$1/usr/bin/gdbus"
