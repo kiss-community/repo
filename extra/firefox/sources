@@ -6,4 +6,3 @@ patches/fix-linux-header.patch
 patches/no-dbus.patch
 patches/no-fribidi.patch
 patches/no-perl.patch
-files/firefox.sh
