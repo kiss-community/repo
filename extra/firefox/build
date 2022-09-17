@@ -4,18 +4,6 @@ for p in *.patch; do
     patch -p1 < "$p"
 done
 
-# Build yasm for Firefox's sole use. Firefox is the only package which needs it
-# and upstream is kinda dead.
-(
-    cd yasm
-
-    ./configure \
-        --prefix=/
-
-    make
-    make DESTDIR="$PWD/../junk" install
-)
-
 # Build zip/unzip for Firefox's sole use.
 for f in zip unzip; do (
     cd "$f"
