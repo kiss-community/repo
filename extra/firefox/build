@@ -4,21 +4,6 @@ for p in *.patch; do
     patch -p1 < "$p"
 done
 
-# Build zip/unzip for Firefox's sole use.
-for f in zip unzip; do (
-    cd "$f"
-
-    make \
-        CC="$CC $CFLAGS $CXXFLAGS" \
-        -f unix/Makefile generic
-
-    make \
-        prefix="$PWD/../junk" \
-        -f unix/Makefile install
-) done
-
-export PATH="$PWD/junk/bin:$PATH"
-
 for p in \
     audioipc \
     audioipc-client \

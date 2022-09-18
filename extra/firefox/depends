@@ -27,6 +27,8 @@ pixman
 pkgconf       make
 python        make
 rust          make
+unzip         make
 wayland
 wayland-protocols make
+zip           make
 zlib

@@ -1,6 +1,4 @@
 https://ftp.mozilla.org/pub/firefox/releases/VERSION/source/firefox-VERSION.source.tar.xz
-https://fossies.org/linux/misc/zip30.tar.gz zip
-https://fossies.org/linux/misc/unzip60.tar.gz unzip
 patches/fix-clang-as.patch
 patches/fix-linux-header.patch
 patches/no-dbus.patch
