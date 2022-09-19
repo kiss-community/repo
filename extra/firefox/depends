@@ -15,6 +15,7 @@ libffi
 libjpeg-turbo
 libpng
 libvpx
+libwebp
 llvm          make
 m4            make
 mesa
@@ -27,8 +28,6 @@ pixman
 pkgconf       make
 python        make
 rust          make
-unzip         make
 wayland
 wayland-protocols make
-zip           make
 zlib
