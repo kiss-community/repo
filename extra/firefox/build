@@ -4,6 +4,9 @@ for p in *.patch; do
     patch -p1 < "$p"
 done
 
+sed '/UNZIP/d' toolkit/moz.configure > _
+mv -f _ toolkit/moz.configure
+
 # If using libc++, CXXSTDLIB needs to be set manually.
 case $("$CC" -print-file-name=libc++.so) in */*)
     export CXXSTDLIB=c++
