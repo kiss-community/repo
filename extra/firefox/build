@@ -79,8 +79,4 @@ EOF
 rm -rf \
     "$1/usr/include" \
     "$1/usr/lib/firefox-devel" \
-    "$1/usr/share/idl" \
-    "$1/usr/lib/firefox/browser/features/fxmonitor@mozilla.org.xpi" \
-    "$1/usr/lib/firefox/browser/features/webcompat-reporter@mozilla.org.xpi" \
-    "$1/usr/lib/firefox/browser/features/webcompat@mozilla.org.xpi" \
-    "$1/usr/lib/firefox/browser/features/doh-rollout@mozilla.org.xpi"
+    "$1/usr/share/idl"
