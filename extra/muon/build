@@ -13,6 +13,7 @@ muon setup \
     -Dprefix=/usr \
     -Ddocs=disabled \
     -Dlibcurl=disabled \
+    -Dlibpkgconf=enabled \
     build
 
 ninja -C build
