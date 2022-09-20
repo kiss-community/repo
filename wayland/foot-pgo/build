@@ -17,29 +17,24 @@ case $("$CC" --version) in
     ;;
 esac
 
-mkdir -p bld/release
-cd bld/release
-
-meson \
-    --prefix=/usr \
-    --buildtype=release \
-    --force-fallback-for=fcft,tllist \
-    -Dime=false \
-    ../..
-
 # Generate PGO data.
 {
-    meson configure \
+    muon setup \
+        -Dprefix=/usr \
+        -Dbuildtype=release \
+        -Dforce_fallback_for=fcft,tllist \
+        -Dime=false \
         -Db_pgo=generate \
+        build
 
-    ninja
-    ninja test
+    ninja -C build
+    muon  -C build test
 
     # Required (gives some profiling data).
-    ./footclient --version
+    build/footclient --version
 
     set -- \
-        "$OLDPWD/scripts/generate-alt-random-writes.py" \
+        scripts/generate-alt-random-writes.py \
         --scroll \
         --scroll-region \
         --colors-regular \
@@ -52,7 +47,7 @@ meson \
         --sixel \
         .pgotmp
 
-    ./foot \
+    build/foot \
         --config=/dev/null \
         --term=xterm \
         sh -c "$* && cat .pgotmp"
@@ -60,13 +55,19 @@ meson \
 
 # Clang requires this for PGO.
 case $("$CC" --version) in *clang*)
-    llvm-profdata merge default_*profraw --output=default.profdata
+    llvm-profdata merge default_*profraw --output=build/default.profdata
 esac
 
-meson configure -Db_pgo=use
+muon setup \
+    -Dprefix=/usr \
+    -Dbuildtype=release \
+    -Dforce_fallback_for=fcft,tllist \
+    -Dime=false \
+    -Db_pgo=use \
+    build
 
-ninja
-ninja install
+ninja -C build
+muon  -C build install
 
 rm -rf \
     "$DESTDIR/usr/share/doc" \
