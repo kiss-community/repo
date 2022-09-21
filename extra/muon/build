@@ -4,13 +4,14 @@
 sed "/value: /s/'static'/'both'/" src/script/per_project_options.meson > _
 mv -f _ src/script/per_project_options.meson
 
+# workaround static build
+sed '/MUON_STATIC/d' meson.build > _
+mv -f _ meson.build
+
 command -v muon > /dev/null || {
     ./bootstrap.sh build
     export PATH=$PWD/build:$PATH
 }
-
-# workaround static build
-export CPPFLAGS="$CPPFLAGS -UMUON_STATIC"
 
 muon setup \
     -Dprefix=/usr \
