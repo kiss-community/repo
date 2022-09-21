@@ -9,11 +9,15 @@ command -v muon > /dev/null || {
     export PATH=$PWD/build:$PATH
 }
 
+# workaround static build
+export CPPFLAGS="$CPPFLAGS -UMUON_STATIC"
+
 muon setup \
     -Dprefix=/usr \
     -Ddocs=disabled \
     -Dlibcurl=disabled \
     -Dlibpkgconf=enabled \
+    -Dstatic=true \
     build
 
 ninja -C build
