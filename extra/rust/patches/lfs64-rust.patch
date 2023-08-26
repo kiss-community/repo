@@ -1,27 +1,5 @@
-Patch-Source: https://github.com/rust-lang/rust/pull/106246
---
-From e2355ea7f22219f1fb3919a45e4f07502652ee5c Mon Sep 17 00:00:00 2001
-From: Khem Raj <raj.khem@gmail.com>
-Date: Fri, 19 May 2023 09:22:21 -0700
-Subject: [PATCH] Do not use LFS64 on linux with musl
-
-glibc is providing open64 and other lfs64 functions but musl aliases
-them to normal equivalents since off_t is always 64-bit on musl,
-therefore check for target env along when target OS is linux before
-using open64, this is more available. Latest Musl has made these
-namespace changes [1]
-
-[1] https://git.musl-libc.org/cgit/musl/commit/?id=246f1c811448f37a44b41cd8df8d0ef9736d95f4
-
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- library/std/src/os/linux/fs.rs |  9 ++++++++-
- library/std/src/sys/unix/fd.rs | 14 ++++++++++----
- library/std/src/sys/unix/fs.rs | 25 +++++++++++++++++++------
- 3 files changed, 37 insertions(+), 11 deletions(-)
-
 diff --git a/library/std/src/os/linux/fs.rs b/library/std/src/os/linux/fs.rs
-index 479bbcc17a89e..ab0b2a3eda3f5 100644
+index 479bbcc1..ab0b2a3e 100644
 --- a/library/std/src/os/linux/fs.rs
 +++ b/library/std/src/os/linux/fs.rs
 @@ -329,7 +329,14 @@ pub trait MetadataExt {
@@ -41,10 +19,10 @@ index 479bbcc17a89e..ab0b2a3eda3f5 100644
      fn st_dev(&self) -> u64 {
          self.as_inner().as_inner().st_dev as u64
 diff --git a/library/std/src/sys/unix/fd.rs b/library/std/src/sys/unix/fd.rs
-index cb630eede6da0..c1e0c05213ac2 100644
+index 85e020ae..7489d5d2 100644
 --- a/library/std/src/sys/unix/fd.rs
 +++ b/library/std/src/sys/unix/fd.rs
-@@ -122,9 +122,12 @@ impl FileDesc {
+@@ -124,9 +124,12 @@ impl FileDesc {
      }
  
      pub fn read_at(&self, buf: &mut [u8], offset: u64) -> io::Result<usize> {
@@ -59,7 +37,7 @@ index cb630eede6da0..c1e0c05213ac2 100644
          use libc::pread64;
  
          unsafe {
-@@ -277,9 +280,12 @@ impl FileDesc {
+@@ -281,9 +284,12 @@ impl FileDesc {
      }
  
      pub fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize> {
@@ -75,10 +53,10 @@ index cb630eede6da0..c1e0c05213ac2 100644
  
          unsafe {
 diff --git a/library/std/src/sys/unix/fs.rs b/library/std/src/sys/unix/fs.rs
-index 09db5b11dbfd3..e31f987c7dc9a 100644
+index fbc7f04c..f6034155 100644
 --- a/library/std/src/sys/unix/fs.rs
 +++ b/library/std/src/sys/unix/fs.rs
-@@ -47,9 +47,13 @@ use libc::{c_int, mode_t};
+@@ -50,9 +50,13 @@ use libc::{c_int, mode_t};
      all(target_os = "linux", target_env = "gnu")
  ))]
  use libc::c_char;
@@ -94,10 +72,10 @@ index 09db5b11dbfd3..e31f987c7dc9a 100644
  use libc::fstatat64;
  #[cfg(any(
      target_os = "android",
-@@ -58,9 +62,10 @@ use libc::fstatat64;
-     target_os = "redox",
+@@ -62,9 +66,10 @@ use libc::fstatat64;
      target_os = "illumos",
      target_os = "nto",
+     target_os = "vita",
 +    target_env = "musl",
  ))]
  use libc::readdir as readdir64;
@@ -106,7 +84,7 @@ index 09db5b11dbfd3..e31f987c7dc9a 100644
  use libc::readdir64;
  #[cfg(any(target_os = "emscripten", target_os = "l4re"))]
  use libc::readdir64_r;
-@@ -81,7 +86,13 @@ use libc::{
+@@ -86,7 +91,13 @@ use libc::{
      dirent as dirent64, fstat as fstat64, fstatat as fstatat64, ftruncate64, lseek64,
      lstat as lstat64, off64_t, open as open64, stat as stat64,
  };
@@ -120,7 +98,7 @@ index 09db5b11dbfd3..e31f987c7dc9a 100644
      target_os = "linux",
      target_os = "emscripten",
      target_os = "l4re",
-@@ -91,7 +102,7 @@ use libc::{
+@@ -96,7 +107,7 @@ use libc::{
      dirent as dirent64, fstat as fstat64, ftruncate as ftruncate64, lseek as lseek64,
      lstat as lstat64, off_t as off64_t, open as open64, stat as stat64,
  };
@@ -129,7 +107,7 @@ index 09db5b11dbfd3..e31f987c7dc9a 100644
  use libc::{dirent64, fstat64, ftruncate64, lseek64, lstat64, off64_t, open64, stat64};
  
  pub use crate::sys_common::fs::try_exists;
-@@ -278,6 +289,7 @@ unsafe impl Sync for Dir {}
+@@ -283,6 +294,7 @@ unsafe impl Sync for Dir {}
  #[cfg(any(
      target_os = "android",
      target_os = "linux",
@@ -137,7 +115,7 @@ index 09db5b11dbfd3..e31f987c7dc9a 100644
      target_os = "solaris",
      target_os = "illumos",
      target_os = "fuchsia",
-@@ -312,6 +324,7 @@ struct dirent64_min {
+@@ -324,6 +336,7 @@ struct dirent64_min {
  }
  
  #[cfg(not(any(
@@ -145,7 +123,7 @@ index 09db5b11dbfd3..e31f987c7dc9a 100644
      target_os = "android",
      target_os = "linux",
      target_os = "solaris",
-@@ -798,7 +811,7 @@ impl DirEntry {
+@@ -832,7 +845,7 @@ impl DirEntry {
      }
  
      #[cfg(all(
@@ -154,7 +132,7 @@ index 09db5b11dbfd3..e31f987c7dc9a 100644
          not(miri)
      ))]
      pub fn metadata(&self) -> io::Result<FileAttr> {
-@@ -822,7 +835,7 @@ impl DirEntry {
+@@ -856,7 +869,7 @@ impl DirEntry {
      }
  
      #[cfg(any(

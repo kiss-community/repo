@@ -6,6 +6,28 @@ for p in *.patch; do
     patch -p1 < "$p"
 done
 
+mkdir _lib
+
+(
+    cd _lib
+
+    : "${AR:=ar}"
+    : "${CC:=cc}"
+
+    $CC ../liblfs64.c -c -fPIC -o liblfs64.o
+    $AR rcs liblfs64.a liblfs64.o
+
+    cat > cc <<EOF
+#!/bin/sh
+set -x
+PATH="$PATH"
+exec $CC \$@ -L$PWD -llfs64
+EOF
+    chmod +x cc
+)
+
+export PATH="$PWD/_lib:$PATH"
+
 # Instruct the compiler to trim absolute paths in resulting binaries and instead
 # change them to relative paths ($PWD/... ./...).
 export RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$PWD=."
@@ -15,19 +37,8 @@ sed 's/\(crt_static_default = \)true/\1false/' \
     compiler/rustc_target/src/spec/linux_musl_base.rs > _
 mv -f _ compiler/rustc_target/src/spec/linux_musl_base.rs
 
-# Ignore checksums of files modified above.
-for p in \
-    curl-sys \
-    getrandom-0.2.8 \
-    libc \
-    libc-0.2.138 \
-    libc-0.2.139 \
-    libc-0.2.140 \
-    libc-0.2.143
-do
-    sed 's/\("files":{\)[^}]*/\1/' vendor/"$p"/.cargo-checksum.json > _
-    mv -f _ vendor/"$p"/.cargo-checksum.json
-done
+sed 's/\("files":{\)[^}]*/\1/' vendor/curl-sys/.cargo-checksum.json > _
+mv -f _ vendor/curl-sys/.cargo-checksum.json
 
 cat > config.toml <<EOF
 [llvm]
@@ -76,7 +87,7 @@ EOF
         # This mimics the download process of rust's 'x.py'
         # bootstrap library to allow for the removal of the internet
         # connection requirement per build.
-        mkdir -p "${cache_dir:=build/cache/2023-06-01}"
+        mkdir -p "${cache_dir:=build/cache/2023-07-13}"
 
         for tarball in *.tar.xz\?no-extract; do
             mv -f "$tarball" "$cache_dir/${tarball%%\?no-extract}"

@@ -1,9 +1,7 @@
-https://static.rust-lang.org/dist/rustc-1.71.0-src.tar.xz
-https://static.rust-lang.org/dist/2023-06-01/rust-std-1.70.0-x86_64-unknown-linux-musl.tar.xz?no-extract
-https://static.rust-lang.org/dist/2023-06-01/rustc-1.70.0-x86_64-unknown-linux-musl.tar.xz?no-extract
-https://static.rust-lang.org/dist/2023-06-01/cargo-1.70.0-x86_64-unknown-linux-musl.tar.xz?no-extract
-patches/fix-crt-static.patch
+https://static.rust-lang.org/dist/rustc-1.72.0-src.tar.xz
+https://static.rust-lang.org/dist/2023-07-13/rust-std-1.71.0-x86_64-unknown-linux-musl.tar.xz?no-extract
+https://static.rust-lang.org/dist/2023-07-13/rustc-1.71.0-x86_64-unknown-linux-musl.tar.xz?no-extract
+https://static.rust-lang.org/dist/2023-07-13/cargo-1.71.0-x86_64-unknown-linux-musl.tar.xz?no-extract
+files/liblfs64.c
 patches/fix-curl.patch
-patches/lfs64-getrandom.patch
-patches/lfs64-libc.patch
 patches/lfs64-rust.patch
