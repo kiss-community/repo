@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index f69b30f..be3d7c0 100644
+index bb88c8d..4f0e084 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -314,16 +314,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -20,7 +20,7 @@ index f69b30f..be3d7c0 100644
    src/cmdline.cc
    src/filetype.cc
    src/gc-sections.cc
-@@ -391,13 +384,6 @@ target_sources(mold PRIVATE
+@@ -390,13 +383,6 @@ target_sources(mold PRIVATE
    lib/perf.cc
    lib/random.cc
    lib/tar.cc
@@ -32,13 +32,13 @@ index f69b30f..be3d7c0 100644
 -  src/arch-s390x.cc
 -  src/arch-sparc64.cc
    src/arch-x86-64.cc
-   src/config.cc
    src/elf.cc
+   src/entry.cc
 diff --git a/src/main.cc b/src/main.cc
-index 950c0f3..7bd2bae 100644
+index c2faf27..0ea5d4c 100644
 --- a/src/main.cc
 +++ b/src/main.cc
-@@ -286,11 +286,6 @@ int mold_main(int argc, char **argv) {
+@@ -279,11 +279,6 @@ int mold_main(int argc, char **argv) {
    if (ctx.arg.emulation.empty())
      ctx.arg.emulation = detect_machine_type(ctx, file_args);
  
@@ -51,10 +51,10 @@ index 950c0f3..7bd2bae 100644
  
    install_signal_handler();
 diff --git a/src/mold.h b/src/mold.h
-index 17832b5..d622187 100644
+index 237af93..8bf58bd 100644
 --- a/src/mold.h
 +++ b/src/mold.h
-@@ -1659,7 +1659,6 @@ std::vector<std::string> parse_nonpositional_args(Context<E> &ctx);
+@@ -1665,7 +1665,6 @@ std::vector<std::string> parse_nonpositional_args(Context<E> &ctx);
  // passes.cc
  //
  
@@ -63,7 +63,7 @@ index 17832b5..d622187 100644
  template <typename E> void apply_exclude_libs(Context<E> &);
  template <typename E> void create_synthetic_sections(Context<E> &);
 diff --git a/src/passes.cc b/src/passes.cc
-index 835dc65..4d26ec5 100644
+index 4e8ba24..3ebc333 100644
 --- a/src/passes.cc
 +++ b/src/passes.cc
 @@ -13,54 +13,6 @@
@@ -121,7 +121,7 @@ index 835dc65..4d26ec5 100644
  template <typename E>
  void apply_exclude_libs(Context<E> &ctx) {
    Timer t(ctx, "apply_exclude_libs");
-@@ -3354,7 +3306,6 @@ void show_stats(Context<E> &ctx) {
+@@ -3513,7 +3465,6 @@ void show_stats(Context<E> &ctx) {
  
  using E = MOLD_TARGET;
  
