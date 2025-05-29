@@ -1,4 +1,4 @@
-https://curl.haxx.se/download/curl-8.13.0.tar.xz
+https://curl.haxx.se/download/curl-8.14.0.tar.xz
 files/CURLINFO_ACTIVESOCKET.3 docs/libcurl/opts
 files/CURLINFO_APPCONNECT_TIME.3 docs/libcurl/opts
 files/CURLINFO_APPCONNECT_TIME_T.3 docs/libcurl/opts
@@ -351,6 +351,7 @@ files/CURLOPT_SSL_ENABLE_NPN.3 docs/libcurl/opts
 files/CURLOPT_SSL_FALSESTART.3 docs/libcurl/opts
 files/CURLOPT_SSL_OPTIONS.3 docs/libcurl/opts
 files/CURLOPT_SSL_SESSIONID_CACHE.3 docs/libcurl/opts
+files/CURLOPT_SSL_SIGNATURE_ALGORITHMS.3 docs/libcurl/opts
 files/CURLOPT_SSL_VERIFYHOST.3 docs/libcurl/opts
 files/CURLOPT_SSL_VERIFYPEER.3 docs/libcurl/opts
 files/CURLOPT_SSL_VERIFYSTATUS.3 docs/libcurl/opts
@@ -508,3 +509,4 @@ files/libcurl-url.3 docs/libcurl
 files/libcurl-ws.3 docs/libcurl
 files/libcurl.3 docs/libcurl
 files/mk-ca-bundle.1 docs
+files/wcurl.1 docs
