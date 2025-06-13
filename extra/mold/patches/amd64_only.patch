@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index bb88c8d..4f0e084 100644
+index 0038d39..0a20b6a 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -314,16 +314,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -17,9 +17,9 @@ index bb88c8d..4f0e084 100644
 -  src/arch-loongarch.cc
 -  src/arch-riscv.cc
 -  src/arch-sh4.cc
+   src/archive-file.cc
    src/cmdline.cc
-   src/filetype.cc
-   src/gc-sections.cc
+   src/error.cc
 @@ -390,13 +383,6 @@ target_sources(mold PRIVATE
    lib/perf.cc
    lib/random.cc
@@ -32,13 +32,13 @@ index bb88c8d..4f0e084 100644
 -  src/arch-s390x.cc
 -  src/arch-sparc64.cc
    src/arch-x86-64.cc
+   src/compress.cc
    src/elf.cc
-   src/entry.cc
 diff --git a/src/main.cc b/src/main.cc
-index c2faf27..0ea5d4c 100644
+index 4e6a905..e4e14c7 100644
 --- a/src/main.cc
 +++ b/src/main.cc
-@@ -279,11 +279,6 @@ int mold_main(int argc, char **argv) {
+@@ -277,11 +277,6 @@ int mold_main(int argc, char **argv) {
    if (ctx.arg.emulation.empty())
      ctx.arg.emulation = detect_machine_type(ctx, file_args);
  
@@ -51,10 +51,10 @@ index c2faf27..0ea5d4c 100644
  
    install_signal_handler();
 diff --git a/src/mold.h b/src/mold.h
-index 237af93..8bf58bd 100644
+index 382a6f7..ab5db1a 100644
 --- a/src/mold.h
 +++ b/src/mold.h
-@@ -1665,7 +1665,6 @@ std::vector<std::string> parse_nonpositional_args(Context<E> &ctx);
+@@ -1898,7 +1898,6 @@ std::vector<std::string> parse_nonpositional_args(Context<E> &ctx);
  // passes.cc
  //
  
@@ -63,10 +63,10 @@ index 237af93..8bf58bd 100644
  template <typename E> void apply_exclude_libs(Context<E> &);
  template <typename E> void create_synthetic_sections(Context<E> &);
 diff --git a/src/passes.cc b/src/passes.cc
-index 4e8ba24..3ebc333 100644
+index b9d8af6..b37cd11 100644
 --- a/src/passes.cc
 +++ b/src/passes.cc
-@@ -13,54 +13,6 @@
+@@ -14,54 +14,6 @@
  
  namespace mold {
  
@@ -121,7 +121,7 @@ index 4e8ba24..3ebc333 100644
  template <typename E>
  void apply_exclude_libs(Context<E> &ctx) {
    Timer t(ctx, "apply_exclude_libs");
-@@ -3513,7 +3465,6 @@ void show_stats(Context<E> &ctx) {
+@@ -3508,7 +3460,6 @@ void show_stats(Context<E> &ctx) {
  
  using E = MOLD_TARGET;
  
