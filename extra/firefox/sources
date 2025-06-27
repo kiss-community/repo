@@ -1,4 +1,4 @@
-https://ftp.mozilla.org/pub/firefox/releases/140.0/source/firefox-140.0.source.tar.xz
+https://ftp.mozilla.org/pub/firefox/releases/140.0.2/source/firefox-140.0.2.source.tar.xz
 patches/fix-target-detection.patch
 patches/musl-sandbox.patch
 patches/no-atk.patch
