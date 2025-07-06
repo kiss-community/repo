@@ -12,10 +12,10 @@ index c7c5406..241fa0a 100644
    gperf_len_type = 'size_t'
  endif
 diff --git a/src/meson.build b/src/meson.build
-index 2680c5b..459394e 100644
+index bf5a781..7638fa0 100644
 --- a/src/meson.build
 +++ b/src/meson.build
-@@ -37,12 +37,6 @@ fcobjshash_gperf = custom_target(
+@@ -57,12 +57,6 @@ fcobjshash_gperf = custom_target(
    build_by_default: true,
  )
  
@@ -25,6 +25,6 @@ index 2680c5b..459394e 100644
 -  command: [gperf, '--pic', '-m', '100', '@INPUT@', '--output-file', '@OUTPUT@']
 -)
 -
- lib_sources = [fc_sources, alias_headers, ft_alias_headers, fclang_h, fccase_h, fcobjshash_h, fcstdint_h]
- lib_kwargs = {
+ lib_fontconfig_sources = [fc_sources, alias_headers, ft_alias_headers, fccase_h, fclang_h, fcobjshash_h, fcstdint_h]
+ lib_fontconfig_kwargs = {
    'include_directories': incbase,
