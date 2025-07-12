@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+sed 's/2.8.12/2.8.12...3.10/' os_release_info.cmake > _
+mv -f _ os_release_info.cmake
+
+sed 's/2.8/2.8...3.10/' cmrtlib/CMakeLists.txt > _
+mv -f _ cmrtlib/CMakeLists.txt
+
+sed 's/2.8/2.8...3.10/' cmrtlib/linux/CMakeLists.txt > _
+mv -f _ cmrtlib/linux/CMakeLists.txt
+
+export DESTDIR="$1"
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DINSTALL_DRIVER_SYSCONF=OFF \
+    -DMEDIA_BUILD_FATAL_WARNINGS=OFF
+
+cmake --build   build
+cmake --install build
