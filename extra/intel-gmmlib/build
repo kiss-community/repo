@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+sed 's/VERSION 3.1/VERSION 3.1...3.12/' CMakeLists.txt > _
+mv -f _ CMakeLists.txt
+
+sed 's/VERSION 3.5/VERSION 3.5...3.12/' Source/GmmLib/CMakeLists.txt > _
+mv -f _ Source/GmmLib/CMakeLists.txt
+
+sed 's/VERSION 2.8.12/VERSION 2.8.12...3.12/' Source/GmmLib/os_release_info.cmake > _
+mv -f _ Source/GmmLib/os_release_info.cmake
+
+export DESTDIR="$1"
+
+cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DCMAKE_BUILD_TYPE=Release
+
+cmake --build   build
+cmake --install build
