@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 0038d39..0a20b6a 100644
+index f997173..c900ed8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -314,16 +314,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
+@@ -315,16 +315,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
  # compiler instances. This is hacky but greatly reduces compile time
  # on a multicore machine.
  list(APPEND MOLD_ELF_TARGETS
@@ -20,7 +20,7 @@ index 0038d39..0a20b6a 100644
    src/archive-file.cc
    src/cmdline.cc
    src/error.cc
-@@ -390,13 +383,6 @@ target_sources(mold PRIVATE
+@@ -392,13 +385,6 @@ target_sources(mold PRIVATE
    lib/perf.cc
    lib/random.cc
    lib/tar.cc
@@ -32,8 +32,8 @@ index 0038d39..0a20b6a 100644
 -  src/arch-s390x.cc
 -  src/arch-sparc64.cc
    src/arch-x86-64.cc
-   src/compress.cc
    src/elf.cc
+   src/entry.cc
 diff --git a/src/main.cc b/src/main.cc
 index 4e6a905..e4e14c7 100644
 --- a/src/main.cc
