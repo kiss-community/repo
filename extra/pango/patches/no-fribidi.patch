@@ -1,5 +1,5 @@
 diff --git a/meson.build b/meson.build
-index 4fa716e..2a2b50a 100644
+index b8098c1..7cfd4f5 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -210,7 +210,6 @@ glib_minor_req = 82
@@ -9,11 +9,11 @@ index 4fa716e..2a2b50a 100644
 -fribidi_req    = '>= 1.0.6'
  libthai_req    = '>= 0.1.9'
  harfbuzz_req   = '>= 8.4.0'
- fontconfig_req = '>= 2.15.0'
-@@ -231,8 +230,7 @@ glib_dep = dependency('glib-2.0', version: glib_req)
+ fontconfig_req = '>= 2.17.0'
+@@ -230,8 +229,7 @@ mathlib_dep = cc.find_library('m', required: false)
+ glib_dep = dependency('glib-2.0', version: glib_req)
  gobject_dep = dependency('gobject-2.0', version: glib_req)
  gio_dep = dependency('gio-2.0', version: glib_req)
- gi_dep = dependency('gobject-introspection-1.0', version: gi_req, required: get_option('introspection').enabled())
 -fribidi_dep = dependency('fribidi', version: fribidi_req, default_options: ['docs=false'])
 -pango_deps += [mathlib_dep, glib_dep, gobject_dep, gio_dep, fribidi_dep]
 +pango_deps += [mathlib_dep, glib_dep, gobject_dep, gio_dep]
