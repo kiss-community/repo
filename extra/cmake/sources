@@ -1,1 +1,2 @@
 https://cmake.org/files/v4.1/cmake-4.1.1.tar.gz
+patches/curl-8.16.0.patch
