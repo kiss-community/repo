@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-patch -p1 < curl-8.16.0.patch
-
 if command -v cmake >/dev/null; then
     export DESTDIR="$1"
 
