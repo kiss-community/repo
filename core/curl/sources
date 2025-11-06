@@ -1,4 +1,4 @@
-https://curl.haxx.se/download/curl-8.16.0.tar.xz
+https://curl.haxx.se/download/curl-8.17.0.tar.xz
 files/CURLINFO_ACTIVESOCKET.3 docs/libcurl/opts
 files/CURLINFO_APPCONNECT_TIME.3 docs/libcurl/opts
 files/CURLINFO_APPCONNECT_TIME_T.3 docs/libcurl/opts
@@ -89,6 +89,8 @@ files/CURLMOPT_MAX_HOST_CONNECTIONS.3 docs/libcurl/opts
 files/CURLMOPT_MAX_PIPELINE_LENGTH.3 docs/libcurl/opts
 files/CURLMOPT_MAX_TOTAL_CONNECTIONS.3 docs/libcurl/opts
 files/CURLMOPT_NETWORK_CHANGED.3 docs/libcurl/opts
+files/CURLMOPT_NOTIFYDATA.3 docs/libcurl/opts
+files/CURLMOPT_NOTIFYFUNCTION.3 docs/libcurl/opts
 files/CURLMOPT_PIPELINING.3 docs/libcurl/opts
 files/CURLMOPT_PIPELINING_SERVER_BL.3 docs/libcurl/opts
 files/CURLMOPT_PIPELINING_SITE_BL.3 docs/libcurl/opts
@@ -468,6 +470,8 @@ files/curl_multi_get_handles.3 docs/libcurl
 files/curl_multi_get_offt.3 docs/libcurl
 files/curl_multi_info_read.3 docs/libcurl
 files/curl_multi_init.3 docs/libcurl
+files/curl_multi_notify_disable.3 docs/libcurl
+files/curl_multi_notify_enable.3 docs/libcurl
 files/curl_multi_perform.3 docs/libcurl
 files/curl_multi_poll.3 docs/libcurl
 files/curl_multi_remove_handle.3 docs/libcurl
