@@ -1,5 +1,6 @@
-https://ftp.mozilla.org/pub/firefox/releases/145.0.1/source/firefox-145.0.1.source.tar.xz
+https://ftp.mozilla.org/pub/firefox/releases/146.0/source/firefox-146.0.source.tar.xz
 patches/fix-header-musl.patch
+patches/fix-musl-redefined-prctl_mm_map.patch
 patches/fix-target-detection.patch
 patches/musl-sandbox.patch
 patches/no-atk.patch
