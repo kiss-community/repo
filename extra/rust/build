@@ -70,7 +70,7 @@ EOF
 # This mimics the download process of rust's 'x.py'
 # bootstrap library to allow for the removal of the internet
 # connection requirement per build.
-mkdir -p "${cache_dir:=build/cache/2025-09-18}"
+mkdir -p "${cache_dir:=build/cache/2025-10-30}"
 
 for tarball in *.tar.xz\?no-extract; do
     mv -f "$tarball" "$cache_dir/${tarball%%\?no-extract}"

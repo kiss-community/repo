@@ -16,7 +16,7 @@ index 1bef602..f81dbfa 100644
      }
  }
 diff --git a/compiler/rustc_target/src/spec/crt_objects.rs b/compiler/rustc_target/src/spec/crt_objects.rs
-index e3b6430..13a96e2 100644
+index 2d84e78..0e6cb0f 100644
 --- a/compiler/rustc_target/src/spec/crt_objects.rs
 +++ b/compiler/rustc_target/src/spec/crt_objects.rs
 @@ -62,28 +62,6 @@ pub(super) fn all(obj: &'static str) -> CrtObjects {
@@ -47,7 +47,7 @@ index e3b6430..13a96e2 100644
 -
  pub(super) fn pre_mingw_self_contained() -> CrtObjects {
      new(&[
-         (LinkOutputKind::DynamicNoPicExe, &["crt2.o", "rsbegin.o"]),
+         (LinkOutputKind::DynamicNoPicExe, &["crt2.o"]),
 diff --git a/compiler/rustc_target/src/spec/targets/x86_64_unknown_linux_musl.rs b/compiler/rustc_target/src/spec/targets/x86_64_unknown_linux_musl.rs
 index 8dcdc5b..25f53d6 100644
 --- a/compiler/rustc_target/src/spec/targets/x86_64_unknown_linux_musl.rs
