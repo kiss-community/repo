@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-patch -p1 < ffmpeg-8.patch
-
 export DESTDIR="$1"
 
 meson setup \
