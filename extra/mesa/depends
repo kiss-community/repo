@@ -10,6 +10,7 @@ meson make
 pkgconf make
 python-mako make
 python-yaml make
+python-setuptools make
 spirv-llvm-translator make
 wayland
 wayland-protocols make
