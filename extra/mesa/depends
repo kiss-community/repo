@@ -4,6 +4,7 @@ flex make
 libclc make
 libdrm
 libelf
+libva
 linux-headers make
 m4 make
 meson make
