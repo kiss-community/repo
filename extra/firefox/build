@@ -66,7 +66,7 @@ ac_add_options --disable-parental-controls
 ac_add_options --disable-system-extension-dirs
 EOF
 
-./mach build
+./mach build "${MAKEFLAGS:-}"
 DESTDIR="$1" ./mach install
 
 # Remove a lot of uneeded "stuff".
