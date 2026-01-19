@@ -2,10 +2,6 @@
 
 patch -p1 < mandoc-no-warn.patch
 
-# Change default pager.
-sed 's,"more -s","less",g' main.c > _
-mv -f _ main.c
-
 # Use CC rather than broken default.
 sed "s|CC=.*|CC=$CC|" configure > _
 mv -f _ configure
@@ -16,6 +12,7 @@ MANDIR=/usr/share/man
 LIBDIR=/usr/lib
 SBINDIR=/usr/bin
 LN="ln -sf"
+BINM_PAGER=less
 EOF
 
 sh ./configure
