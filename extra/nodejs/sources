@@ -1,1 +1,2 @@
 https://nodejs.org/download/release/v25.3.0/node-v25.3.0.tar.xz
+patches/no-libatomic.patch
