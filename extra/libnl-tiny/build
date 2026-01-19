@@ -2,4 +2,4 @@
 
 patch -p1 < nla_s8.patch
 
-make ALL_LIBS=libnl-tiny.a DESTDIR="$1" prefix=/usr install
+make CC="$CC" ALL_LIBS=libnl-tiny.a DESTDIR="$1" prefix=/usr install
