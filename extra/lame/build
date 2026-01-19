@@ -4,6 +4,8 @@
 sed 's/html man/man/' doc/Makefile.in > _
 mv -f _ doc/Makefile.in
 
+export LDFLAGS="$LDFLAGS -Wl,--undefined-version"
+
 ./configure \
     ac_cv_lib_ncurses_initscr=no \
     ac_cv_lib_curses_initscr=no \
