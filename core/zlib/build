@@ -1,6 +1,9 @@
 #!/bin/sh -e
 
 export CFLAGS="$CFLAGS -fPIC"
+export LDFLAGS="$LDFLAGS -Wl,--undefined-version"
+
+patch -p1 < zlib-1.3.1-use-LDFLAGS-in-configure.patch
 
 ./configure \
     --prefix=/usr
