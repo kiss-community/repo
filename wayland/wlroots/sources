@@ -1,1 +1,2 @@
 https://gitlab.freedesktop.org/wlroots/wlroots/-/archive/0.19.2/wlroots-0.19.2.tar.gz
+patches/libinput-1.31.patch
