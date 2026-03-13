@@ -1,4 +1,4 @@
-https://ftp.mozilla.org/pub/firefox/releases/148.0/source/firefox-148.0.source.tar.xz
+https://ftp.mozilla.org/pub/firefox/releases/148.0.2/source/firefox-148.0.2.source.tar.xz
 patches/fix-header-musl.patch
 patches/fix-missing-cstdint.patch
 patches/fix-musl-redefined-prctl_mm_map.patch
