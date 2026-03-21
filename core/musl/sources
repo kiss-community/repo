@@ -1,8 +1,6 @@
-https://musl.libc.org/releases/musl-1.2.5.tar.gz
+https://musl.libc.org/releases/musl-1.2.6.tar.gz
 files/cdefs.h
 files/queue.h
 files/tree.h
 files/getconf.c
 files/getent.c
-patches/iconv_fix_erroneous_input_validation.patch
-patches/iconv_harden_utf-8_output.patch

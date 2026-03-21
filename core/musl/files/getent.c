@@ -36,6 +36,7 @@
 #include <netdb.h>
 #include <pwd.h>
 #include <grp.h>
+#include <shadow.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -139,7 +140,7 @@ static int ethers(int argc, char *argv[])
 
 static void groupprint(const struct group *gr)
 {
-	printfmtstrings(gr->gr_mem, ":", ",", "%s:%s:%u",
+	printfmtstrings(gr->gr_mem, "", ",", "%s:%s:%u:",
 			gr->gr_name, gr->gr_passwd, gr->gr_gid);
 }
 
@@ -309,7 +310,7 @@ static int networks(int argc, char *argv[])
 				ne = getnetbyaddr(net, AF_INET);
 			else
 				ne = getnetbyname(argv[i]);
-			if (ne != NULL) {
+			if (ne == NULL) {
 				rv = RV_NOTFOUND;
 				break;
 			}
@@ -428,6 +429,29 @@ static int services(int argc, char *argv[])
 	return rv;
 }
 
+static int shadow(int argc, char *argv[])
+{
+	struct spwd	*sp;
+	int		i, rv;
+
+	rv = RV_OK;
+	if (argc == 2) {
+		while ((sp = getspent()) != NULL)
+			putspent(sp, stdout);
+	} else {
+		for (i = 2; i < argc; i++) {
+			sp = getspnam(argv[i]);
+			if (sp == NULL) {
+				rv = RV_NOTFOUND;
+				break;
+			}
+			putspent(sp, stdout);
+		}
+	}
+	endspent();
+	return rv;
+}
+
 static int shells(int argc, char *argv[])
 {
 	const char	*sh;
@@ -471,6 +495,7 @@ static struct getentdb {
 	{	"passwd",	passwd,		},
 	{	"protocols",	protocols,	},
 	{	"services",	services,	},
+	{	"shadow",	shadow,		},
 	{	"shells",	shells,		},
 
 	{	NULL,		NULL,		},
