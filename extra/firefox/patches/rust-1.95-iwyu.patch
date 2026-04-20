@@ -1,0 +1,12 @@
+diff --git a/third_party/rust/encoding_rs/src/x_user_defined.rs b/third_party/rust/encoding_rs/src/x_user_defined.rs
+index 7af7d5e..afd93c1 100644
+--- a/third_party/rust/encoding_rs/src/x_user_defined.rs
++++ b/third_party/rust/encoding_rs/src/x_user_defined.rs
+@@ -7,6 +7,7 @@
+ // option. This file may not be copied, modified, or distributed
+ // except according to those terms.
+ 
++use core::simd::Select;
+ use super::*;
+ use crate::handles::*;
+ use crate::variant::*;

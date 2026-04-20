@@ -1,4 +1,5 @@
-https://ftp.mozilla.org/pub/firefox/releases/149.0.2/source/firefox-149.0.2.source.tar.xz
+https://ftp.mozilla.org/pub/firefox/releases/150.0/source/firefox-150.0.source.tar.xz
+patches/fix-gcc-ffmpeg.patch
 patches/fix-header-musl.patch
 patches/fix-missing-cstdint.patch
 patches/fix-musl-redefined-prctl_mm_map.patch
@@ -7,3 +8,4 @@ patches/musl-sandbox.patch
 patches/no-atk.patch
 patches/no-dbus.patch
 patches/no-fribidi.patch
+patches/rust-1.95-iwyu.patch
