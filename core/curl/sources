@@ -1,4 +1,4 @@
-https://curl.haxx.se/download/curl-8.19.0.tar.xz
+https://curl.haxx.se/download/curl-8.20.0.tar.xz
 files/CURLINFO_ACTIVESOCKET.3 docs/libcurl/opts
 files/CURLINFO_APPCONNECT_TIME.3 docs/libcurl/opts
 files/CURLINFO_APPCONNECT_TIME_T.3 docs/libcurl/opts
@@ -58,6 +58,7 @@ files/CURLINFO_RTSP_CSEQ_RECV.3 docs/libcurl/opts
 files/CURLINFO_RTSP_SERVER_CSEQ.3 docs/libcurl/opts
 files/CURLINFO_RTSP_SESSION_ID.3 docs/libcurl/opts
 files/CURLINFO_SCHEME.3 docs/libcurl/opts
+files/CURLINFO_SIZE_DELIVERED.3 docs/libcurl/opts
 files/CURLINFO_SIZE_DOWNLOAD.3 docs/libcurl/opts
 files/CURLINFO_SIZE_DOWNLOAD_T.3 docs/libcurl/opts
 files/CURLINFO_SIZE_UPLOAD.3 docs/libcurl/opts
@@ -96,6 +97,8 @@ files/CURLMOPT_PIPELINING_SERVER_BL.3 docs/libcurl/opts
 files/CURLMOPT_PIPELINING_SITE_BL.3 docs/libcurl/opts
 files/CURLMOPT_PUSHDATA.3 docs/libcurl/opts
 files/CURLMOPT_PUSHFUNCTION.3 docs/libcurl/opts
+files/CURLMOPT_QUICK_EXIT.3 docs/libcurl/opts
+files/CURLMOPT_RESOLVE_THREADS_MAX.3 docs/libcurl/opts
 files/CURLMOPT_SOCKETDATA.3 docs/libcurl/opts
 files/CURLMOPT_SOCKETFUNCTION.3 docs/libcurl/opts
 files/CURLMOPT_TIMERDATA.3 docs/libcurl/opts
@@ -521,6 +524,4 @@ files/libcurl-url.3 docs/libcurl
 files/libcurl-ws.3 docs/libcurl
 files/libcurl.3 docs/libcurl
 files/mk-ca-bundle.1 docs
-files/runtests.1 docs
-files/testcurl.1 docs
 files/wcurl.1 docs
