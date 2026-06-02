@@ -1,4 +1,4 @@
-https://ftp.mozilla.org/pub/firefox/releases/151.0.2/source/firefox-151.0.2.source.tar.xz
+https://ftp.mozilla.org/pub/firefox/releases/151.0.3/source/firefox-151.0.3.source.tar.xz
 patches/fix-gcc-ffmpeg.patch
 patches/fix-header-musl.patch
 patches/fix-missing-cstdint.patch
