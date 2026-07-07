@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7a43187..a491b8d 100644
+index a1293db..580cb70 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -184,7 +184,6 @@ message(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+@@ -193,7 +193,6 @@ message(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
  
  if(CMAKE_INSTALL_PREFIX STREQUAL "${CMAKE_INSTALL_DEFAULT_PREFIX}")
    set(CMAKE_INSTALL_DEFAULT_DATAROOTDIR "")
@@ -10,7 +10,7 @@ index 7a43187..a491b8d 100644
    set(CMAKE_INSTALL_DEFAULT_JAVADIR "<CMAKE_INSTALL_DATAROOTDIR>/classes")
    if(UNIX AND NOT APPLE)
      if(BITS EQUAL 64)
-@@ -208,7 +207,7 @@ macro(report_directory var)
+@@ -217,7 +216,7 @@ macro(report_directory var)
    mark_as_advanced(CLEAR CMAKE_INSTALL_${var})
  endmacro()
  
@@ -19,7 +19,7 @@ index 7a43187..a491b8d 100644
  if(UNIX)
    list(APPEND DIRLIST "MANDIR")
  endif()
-@@ -1908,28 +1907,6 @@ if(WITH_TOOLS)
+@@ -2013,29 +2012,6 @@ if(WITH_TOOLS)
      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin)
  endif()
  
@@ -38,11 +38,12 @@ index 7a43187..a491b8d 100644
 -    ${CMAKE_CURRENT_SOURCE_DIR}/src/tjtran.c
 -    DESTINATION ${CMAKE_INSTALL_DOCDIR} COMPONENT doc)
 -endif()
--if(WITH_JAVA)
--  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/java/TJComp.java
--    ${CMAKE_CURRENT_SOURCE_DIR}/java/TJDecomp.java
--    ${CMAKE_CURRENT_SOURCE_DIR}/java/TJTran.java
--    DESTINATION ${CMAKE_INSTALL_DOCDIR} COMPONENT doc)
+-if(WITH_JNA)
+-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/jna/TJ.java
+-    ${CMAKE_CURRENT_SOURCE_DIR}/jna/TJComp.java
+-    ${CMAKE_CURRENT_SOURCE_DIR}/jna/TJDecomp.java
+-    ${CMAKE_CURRENT_SOURCE_DIR}/jna/TJTran.java
+-    DESTINATION ${CMAKE_INSTALL_DOCDIR}/jna COMPONENT doc)
 -endif()
 -
  if(UNIX OR MINGW)
