@@ -1,8 +1,5 @@
 #!/bin/sh -e
 
-export CFLAGS="$CFLAGS -O3"
-export CXXFLAGS="$CXXFLAGS -O3"
-
 # Remove util-linux dependency among other things.
 cat >> Modules/Setup <<EOF
 *disabled*
@@ -22,7 +19,6 @@ done
     --prefix=/usr \
     --enable-shared \
     --with-system-expat \
-    --with-system-ffi \
     --with-ensurepip=yes
 
 make EXTRA_CFLAGS="$CFLAGS -DTHREAD_STACK_SIZE=0x100000"
