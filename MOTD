@@ -1,3 +1,7 @@
-mold will be likely be dropped soon.
+OpenSSL has been updated to 4.0. Anything compiled against its
+libraries will need to be rebuilt, and may need to be patched.
+Everything in this repository has been versioned accordingly, but
+other repositories may need manual intervention.
 
-If you feel there's value in keeping it around, open an issue.
+mold will be likely be dropped soon. If you feel there's value in
+keeping it around, open an issue.
