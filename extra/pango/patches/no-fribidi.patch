@@ -1,14 +1,14 @@
 diff --git a/meson.build b/meson.build
-index 691084a..fd43b23 100644
+index 9a5dc9ed..585df75c 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -213,7 +213,6 @@ glib_minor_req = 82
+@@ -213,7 +213,6 @@ glib_minor_req = 88
  
  glib_req       = '>= @0@.@1@'.format(glib_major_req, glib_minor_req)
  gi_req         = '>= 1.83.2'
 -fribidi_req    = '>= 1.0.6'
  libthai_req    = '>= 0.1.9'
- harfbuzz_req   = '>= 8.4.0'
+ harfbuzz_req   = '>= 11.0.0'
  fontconfig_req = '>= 2.17.0'
 @@ -234,8 +233,7 @@ glib_dep = dependency('glib-2.0', version: glib_req)
  gobject_dep = dependency('gobject-2.0', version: glib_req)
@@ -21,7 +21,7 @@ index 691084a..fd43b23 100644
  thai_dep = dependency('libthai', version: libthai_req, required: get_option('libthai'))
  if thai_dep.found()
 diff --git a/pango/pango-bidi-type.c b/pango/pango-bidi-type.c
-index 113059b..0fab0fb 100644
+index 113059b9..0fab0fb7 100644
 --- a/pango/pango-bidi-type.c
 +++ b/pango/pango-bidi-type.c
 @@ -23,14 +23,21 @@
