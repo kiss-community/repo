@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+patch -p1 < CVE-2026-6042.patch
+
 # Uncomment if using valgrind or similar.
 # :>nostrip
 
