@@ -1,4 +1,5 @@
-https://ftp.mozilla.org/pub/firefox/releases/155.0/source/firefox-155.0.source.tar.xz
+https://ftp.mozilla.org/pub/firefox/releases/156.0/source/firefox-156.0.source.tar.xz
+patches/fix-audio_thread_priority-musl.patch
 patches/fix-gcc-ffmpeg.patch
 patches/fix-musl-redefined-prctl_mm_map.patch
 patches/fix-target-detection.patch
