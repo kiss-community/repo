@@ -1,6 +1,8 @@
 #!/bin/sh -e
 
-patch -p1 < posix.patch
+for p in *.patch; do
+    patch -p1 < "$p"
+done
 
 ./configure \
     --prefix=/usr \
