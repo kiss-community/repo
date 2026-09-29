@@ -1,3 +1,2 @@
-https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.42/util-linux-2.42.3.tar.xz
-patches/libmount-include.patch
+https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.42/util-linux-2.42.4.tar.xz
 patches/posix.patch
