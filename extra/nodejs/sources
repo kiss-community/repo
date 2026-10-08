@@ -1,2 +1,2 @@
-https://nodejs.org/download/release/v26.11.0/node-v26.11.0.tar.xz
+https://nodejs.org/download/release/v26.11.1/node-v26.11.1.tar.xz
 patches/no-libatomic.patch
