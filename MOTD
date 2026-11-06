@@ -1,3 +1,7 @@
+Perl will very likely be readded to this repository. Maintaining
+patches and providing generated files is far more cumbersome than
+just maintaining a perl package.
+
 OpenSSL has been updated to 4.0. Anything compiled against its
 libraries will need to be rebuilt, and may need to be patched.
 Everything in this repository has been versioned accordingly, but
