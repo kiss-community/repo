@@ -4,4 +4,5 @@ files/queue.h
 files/tree.h
 files/getconf.c
 files/getent.c
+patches/CVE-2026-107891.patch
 patches/CVE-2026-6042.patch

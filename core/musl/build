@@ -1,6 +1,8 @@
 #!/bin/sh -e
 
-patch -p1 < CVE-2026-6042.patch
+for p in *.patch; do
+    patch -p1 < "$p"
+done
 
 # Uncomment if using valgrind or similar.
 # :>nostrip
