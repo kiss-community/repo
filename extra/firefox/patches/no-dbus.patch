@@ -1,8 +1,8 @@
 diff --git a/toolkit/components/remote/moz.build b/toolkit/components/remote/moz.build
-index 4ac1408..0e84246 100644
+index 16b3b05..75ec610 100644
 --- a/toolkit/components/remote/moz.build
 +++ b/toolkit/components/remote/moz.build
-@@ -26,7 +26,7 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "gtk":
+@@ -48,7 +48,7 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "gtk":
              "RemoteUtils.h",
          ]
          CXXFLAGS += CONFIG["MOZ_DBUS_CFLAGS"]
@@ -12,10 +12,10 @@ index 4ac1408..0e84246 100644
              "nsGTKRemoteServer.cpp",
              "nsXRemoteClient.cpp",
 diff --git a/toolkit/components/remote/nsRemoteService.cpp b/toolkit/components/remote/nsRemoteService.cpp
-index 46860f6..66ba453 100644
+index c825499..ad9d8e6 100644
 --- a/toolkit/components/remote/nsRemoteService.cpp
 +++ b/toolkit/components/remote/nsRemoteService.cpp
-@@ -7,10 +7,10 @@
+@@ -4,10 +4,10 @@
  
  #include "nsRemoteClient.h"
  #ifdef MOZ_WIDGET_GTK
@@ -28,27 +28,27 @@ index 46860f6..66ba453 100644
  #    include "nsGTKRemoteServer.h"
  #    include "nsXRemoteClient.h"
  #  endif
-@@ -198,8 +198,10 @@ nsresult nsRemoteService::SendCommandLine(const nsACString& aProfile,
+@@ -195,8 +195,10 @@ nsresult nsRemoteService::SendCommandLine(const nsACString& aProfile,
  #ifdef MOZ_WIDGET_GTK
  #  if defined(MOZ_ENABLE_DBUS)
-   client = MakeUnique<nsDBusRemoteClient>(mStartupToken);
+   client = std::make_unique<nsDBusRemoteClient>(mStartupToken);
 -#  else
 +#  elif defined(MOZ_X11)
-   client = MakeUnique<nsXRemoteClient>(mStartupToken);
+   client = std::make_unique<nsXRemoteClient>(mStartupToken);
 +#  else
 +  return NS_ERROR_NOT_AVAILABLE;
  #  endif
  #elif defined(XP_WIN)
-   client = MakeUnique<nsWinRemoteClient>();
-@@ -260,8 +262,10 @@ void nsRemoteService::StartupServer() {
+   client = std::make_unique<nsWinRemoteClient>();
+@@ -257,8 +259,10 @@ void nsRemoteService::StartupServer() {
  #ifdef MOZ_WIDGET_GTK
  #  if defined(MOZ_ENABLE_DBUS)
-   mRemoteServer = MakeUnique<nsDBusRemoteServer>();
+   mRemoteServer = std::make_unique<nsDBusRemoteServer>();
 -#  else
 +#  elif defined(MOZ_X11)
-   mRemoteServer = MakeUnique<nsGTKRemoteServer>();
+   mRemoteServer = std::make_unique<nsGTKRemoteServer>();
 +#  else
 +  return;
  #  endif
  #elif defined(XP_WIN)
-   mRemoteServer = MakeUnique<nsWinRemoteServer>();
+   mRemoteServer = std::make_unique<nsWinRemoteServer>();
